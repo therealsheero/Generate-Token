@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Booking/ नियुक्ति बुकिंग</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="gov-header">
+  <div class="gov-left">
+    <img src="assets/india-emblem.png" alt="Government of India Logo">
+  </div>
+  <div class="gov-center">
+    <h1>Government of India / भारत सरकार</h1>
+    <p>Appointment Booking/ नियुक्ति बुकिंग</p>
+  </div>
+  <div class="gov-right">
+    <img src="assets/Aadhaar_Small.png" alt="Department Logo">
+  </div>
+</header>
+
+<h2 style="text-align:center;">Book Appointment/ नियुक्ति तिथि चुनें</h2>
+
+<p id="infoText" style="text-align:center;"></p>
+
+<div id="calendar" class="calendar-grid"></div>
+
+<div id="slotInfo" style="display:center;"></div>
+
+<hr />
+
+<div id="formWrapper" style="display:none;">
+  <h3>Applicant Details/ आवेदक का विवरण</h3>
+
+  <form id="bookingForm">
+
+    <label>Name/ नाम</label>
+    <input id="name" required>
+
+    <label>Mobile/ मोबाइल</label>
+    <input id="mobile" pattern="[0-9]{10}" maxlength="10" required>
+    <!-- <button type="button" id="sendOtpBtn">Send OTP</button>
+
+    <input id="otp" placeholder="Enter OTP" maxlength="6" />
+
+    <button type="button" id="verifyOtpBtn">Verify OTP</button> -->
+
+
+    <label>Aadhaar (Last 4)/ आधार (अंतिम 4 अंक)</label>
+    <input id="aadhaar" type="text" pattern="[0-9]{4}" maxlength="4" inputmode="numeric" placeholder="XXXX" required />
+
+    <label>Gender/ लिंग</label>
+    <select id="gender">
+      <option value="">-- Select Gender --</option>
+      <option value="Male">Male/ पुरुष</option>
+      <option value="Female">Female/ महिला</option>
+      <option value="Other">Other/ अन्य</option>
+    </select>
+
+    <label>Age/ आयु</label>
+    <input id="age" type="number" required>
+
+    <label>Divyang/ दिव्यांग</label>
+    <select id="divyang">
+      <option value="No">No/ नहीं</option>
+      <option value="Yes">Yes/ हाँ</option>
+    </select>
+
+    <label>District/ ज़िला</label>
+    <select id="district" required>
+        <option value="">-- Select District --</option>
+        <option>Agra/आगरा</option>
+        <option>Aligarh/अलीगढ</option>
+        <option>Ambedkar Nagar/अंबेडकर नगर</option>
+        <option>Amethi/अमेठी</option>
+        <option>Amroha/अमरोहा</option>
+        <option>Auraiya/अुरैया</option>
+        <option>Ayodhya/अयोध्या</option>
+        <option>Azamgarh/आजमगढ़</option>
+        <option>Baghpat/बागपत</option>
+        <option>Bahraich/बहराइच</option>
+        <option>Ballia/बलिया</option>
+        <option>Balrampur/बलरामपुर</option>
+        <option>Banda/बांदा</option>
+        <option>Barabanki/बाराबंकी</option>
+        <option>Bareilly/बरेली</option>
+        <option>Basti/बस्ती</option>
+        <option>Bhadohi/भदोही</option>
+        <option>Bijnor/बिजनौर</option>
+        <option>Budaun/बदायूं</option>
+        <option>Bulandshahr/बुलंदशहर</option>
+        <option>Chandauli/चंदौली</option>
+        <option>Chitrakoot/चित्रकूट</option>
+        <option>Deoria/देवरिया</option>
+        <option>Etah/एटा</option>
+        <option>Etawah/एटावा</option>
+        <option>Farrukhabad/फर्रुखाबाद</option>
+        <option>Fatehpur/फतेहपुर</option>
+        <option>Firozabad/फिरोजाबाद</option>
+        <option>Gautam Buddha Nagar/गौतम बुद्ध नगर</option>
+        <option>Ghaziabad/गाज़ियाबाद</option>
+        <option>Ghazipur/गाजीपुर</option>
+        <option>Gonda/गोंडा</option>
+        <option>Gorakhpur/गोरखपुर</option>
+        <option>Hamirpur/हमीरपुर</option>
+        <option>Hapur/हापुड़</option>
+        <option>Hardoi/हरदोई</option>
+        <option>Hathras/हाथरस</option>
+        <option>Jalaun/जालौन</option>
+        <option>Jaunpur/जौनपुर</option>
+        <option>Jhansi/झांसी</option>
+        <option>Kannauj/कन्नौज</option>
+        <option>Kanpur Dehat/कानपुर देहात</option>
+        <option>Kanpur Nagar/कानपुर नगर</option>
+        <option>Kasganj/कासगंज</option>
+        <option>Kaushambi/कौशांबी</option>
+        <option>Kushinagar/कुशीनगर</option>
+        <option>Lakhimpur Kheri/लखीमपुर खीरी</option>
+        <option>Lalitpur/ललितपुर</option>
+        <option>Lucknow/लखनऊ</option>
+        <option>Maharajganj/महराजगंज</option>
+        <option>Mahoba/महोबा</option>
+        <option>Mainpuri/मैनपुरी</option>
+        <option>Mathura/मथुरा</option>
+        <option>Mau/मऊ</option>
+        <option>Meerut/मेरठ</option>
+        <option>Mirzapur/मिर्जापुर</option>
+        <option>Moradabad/मुरादाबाद</option>
+        <option>Muzaffarnagar/मुजफ्फरनगर</option>
+        <option>Pilibhit/पिलीभीत</option>
+        <option>Pratapgarh/प्रतापगढ़</option>
+        <option>Prayagraj/प्रयागराज</option>
+        <option>Raebareli/रायबरेली</option>
+        <option>Rampur/रामपुर</option>
+        <option>Saharanpur/सहारनपुर</option>
+        <option>Sambhal/संभल</option>
+        <option>Sant Kabir Nagar/संत कबीर नगर</option>
+        <option>Shahjahanpur/शाहजहांपुर</option>
+        <option>Shamli/शामली</option>
+        <option>Shravasti/श्रावस्ती</option>
+        <option>Siddharthnagar/सिद्धार्थनगर</option>
+        <option>Sitapur/सीतापुर</option>
+        <option>Sonbhadra/सोनभद्र</option>
+        <option>Sultanpur/सुलतानपुर</option>
+        <option>Unnao/उन्नाव</option>
+        <option>Varanasi/वाराणसी</option>
+      </select>
+    </select>
+
+    <label for="service_type">Service Type / सेवा प्रकार</label>
+    <select id="service_type">
+      <option>-- Select Option --</option>
+      <option>Grievance Related to DoB/ जन्मतिथि से संबंधित शिकायत</option>
+      <option>Grievance Related to Name/ नाम से संबंधित शिकायत</option>
+      <option>Aadhaar Suspended/ आधार कार्ड निलंबित</option>
+      <option>General Grievance/ सामान्य शिकायत</option>
+    </select>
+
+    <label>QRC/ क्यूआरसी संख्या (14 अंक)</label>
+      <input id="qrc" type="text"
+             pattern="[A-Za-z0-9]{14}"
+             maxlength="14"
+             placeholder="SXXXXXXXXX000"
+             required />
+             
+    <button type="submit">Generate Appointment Token</button>
+  </form>
+</div>
+
+<p id="status"></p>
+
+<script src="js/appointment.js"></script>
+</body>
+</html>

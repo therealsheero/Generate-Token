@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Slip</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="gov-header">
+  <div class="gov-left">
+    <img src="assets/india-emblem.png" alt="Government of India Logo" />
+  </div>
+  <div class="gov-center">
+    <h1>Government of India</h1>
+    <p>Appointment & Walk-in Token Management System</p>
+  </div>
+  <div class="gov-right">
+    <img src="assets/Aadhaar_Small.png" alt="Department Logo" />
+  </div>
+</header>
+<div class="slip">
+  <h2 id="slipTitle">Token Slip</h2>
+  <div id="slipContent"></div>
+</div>
+<div class="actions">
+  <button class="download-btn" onclick="downloadSlip()">⬇ Download Slip (PDF)</button>
+  <button class="print-btn" onclick="window.print()">🖨 Print</button>
+</div>
+<script src="js/html2pdf.bundle.min.js"></script>
+<script>
+  const data = JSON.parse(localStorage.getItem("tokenData"));
+  const slipContent = document.getElementById("slipContent");
+  const slipTitle = document.getElementById("slipTitle");
+  if (!data) {
+    slipContent.innerHTML = "<p>No token data found.</p>";
+  } else {
+    const isWalkin = data.mode === "W";
+
+    slipTitle.innerText = isWalkin
+      ? "Walk-in Token Slip"
+      : "Appointment Token Slip";
+    slipContent.innerHTML = `
+      <p><strong>Token Number:</strong> ${data.token}</p>
+      <p><strong>${isWalkin ? "Visit Date" : "Appointment Date"}:</strong>
+        ${data.date || data.selected_date}</p>
+      <p><strong>Name:</strong> ${data.name}</p>
+      <p><strong>Mobile:</strong> ${data.mobile}</p>
+      <p><strong>District:</strong> ${data.district}</p>
+      <p><strong>Service Type:</strong> ${data.service_type}</p>
+      <p><strong>Generated On:</strong> ${new Date().toLocaleString()}</p>
+    `;
+  }
+</script>
+<script>
+  function downloadSlip() {
+    const slip = document.querySelector(".slip");
+    const data = JSON.parse(localStorage.getItem("tokenData"));
+
+    if (!slip || !data) {
+      alert("Unable to download slip");
+      return;
+    }
+    const options = {
+      margin: 0.4,
+      filename: `${data.token}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    };
+    html2pdf().set(options).from(slip).save();
+  }
+</script>
+<script>
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    history.go(1);
+  };
+</script>
+<p style="text-align:center; font-size:13px; color:#555;">
+  ❗Please close this page after downloading the slip.
+  To generate a new token, start from the home page.
+</p>
+
+
+
+</body>
+</html>

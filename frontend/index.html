@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Generation Portal / टोकन जनरेशन पोर्टल</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- ⏰ BOOKING TIME CHECK (RUNS FIRST) -->
+  <script>
+    function isWithinBookingTimeIST() {
+      const now = new Date();
+      const ist = new Date(
+        now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
+
+      const minutes = ist.getHours() * 60 + ist.getMinutes();
+      const start = 6 * 60; // 6:00 AM
+      const end   = 18 * 60; // 6:00 PM
+
+      return minutes >= start && minutes <= end;
+    }
+  </script>
+</head>
+
+<body>
+
+<!-- 🇮🇳 GOVERNMENT HEADER -->
+<header class="gov-header">
+  <div class="gov-left">
+    <img src="assets/india-emblem.png" alt="Government of India Logo">
+  </div>
+
+  <div class="gov-center">
+    <h1>Government of India / भारत सरकार</h1>
+    <p>Appointment & Walk-in Token Management System</p>
+  </div>
+
+  <div class="gov-right">
+    <img src="assets/Aadhaar_Small.png" alt="Department Logo">
+  </div>
+</header>
+
+<h2 style="text-align:center;">
+  Token Generation Portal / टोकन जनरेशन पोर्टल
+</h2>
+
+<!-- 📢 STATUS MESSAGE -->
+<p id="locationStatus" style="text-align:center; font-weight:600;">
+  ⏳ Checking booking availability...
+</p>
+
+<!-- 🔘 USER ACTION BUTTONS -->
+<div style="text-align:center; margin-top:30px;">
+  <button id="appointmentBtn" style="display:none;">
+    📅 Book Appointment / अपॉइंटमेंट बुक करें
+  </button>
+
+  <button id="walkinBtn" style="display:none;">
+    🚶 Generate Walk-in Token / वॉक-इन टोकन जनरेट करें
+  </button>
+</div>
+
+<!-- 🔐 ADMIN LOGIN (ALWAYS ENABLED) -->
+<div style="text-align:center; margin-top:25px;">
+  <button id="adminLoginBtn"
+          onclick="window.location.href='admin-login.html'">
+    🔐 Admin Login / व्यवस्थापक लॉगिन
+  </button>
+</div>
+
+<!-- ============================= -->
+<!-- 🧠 MAIN LOGIC -->
+<!-- ============================= -->
+<script>
+  const statusEl = document.getElementById("locationStatus");
+  const appointmentBtn = document.getElementById("appointmentBtn");
+  const walkinBtn = document.getElementById("walkinBtn");
+
+  // 🚫 DISABLE USER BUTTONS (ADMIN NOT TOUCHED)
+  function disableUserButtons() {
+    [appointmentBtn, walkinBtn].forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      btn.style.cursor = "not-allowed";
+    });
+  }
+
+  // 📍 LOCATION CHECK (ONLY IF TIME IS VALID)
+  async function checkLocation() {
+    if (!navigator.geolocation) {
+      statusEl.innerText = "❌ Geolocation not supported";
+      return;
+    }
+
+    statusEl.innerText = "📍 Checking your location...";
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const res = await fetch("http://localhost:5000/api/location-check", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude
+            })
+          });
+
+          const data = await res.json();
+
+          localStorage.setItem("distance_meters", data.distance_meters);
+
+          statusEl.innerText =
+            `📍 Distance from office: ${data.distance_meters} meters`;
+
+          if (data.distance_meters <= 100) {
+            walkinBtn.style.display = "inline-block";
+          } else {
+            appointmentBtn.style.display = "inline-block";
+          }
+
+        } catch {
+          statusEl.innerText = "❌ Failed to verify location";
+        }
+      },
+      () => {
+        statusEl.innerText = "❌ Location permission denied";
+      }
+    );
+  }
+
+  // 🔀 BUTTON NAVIGATION
+  appointmentBtn.onclick = () => {
+    window.location.href = "appointment.html";
+  };
+
+  walkinBtn.onclick = () => {
+    window.location.href = "walkin.html";
+  };
+
+  // 🚦 ENTRY POINT
+  window.addEventListener("load", () => {
+    if (!isWithinBookingTimeIST()) {
+      statusEl.innerText =
+        "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
+
+      disableUserButtons();
+      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
+    }
+
+    // ✅ Time valid → now check location
+    checkLocation();
+  });
+</script>
+
+</body>
+</html>

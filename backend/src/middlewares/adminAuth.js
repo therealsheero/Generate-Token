@@ -1,0 +1,9 @@
+module.exports = (req, res, next) => {
+  const token = req.headers["x-admin-token"];
+
+  if (token !== "ADMIN_AUTH_TOKEN") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  next();
+};

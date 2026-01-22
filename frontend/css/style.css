@@ -1,0 +1,328 @@
+/* ---------- Government Header ---------- */
+.gov-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #fada5e, #eedc82);
+  color: black;
+  border-bottom: 4px solid #f59e0b;
+}
+
+.gov-left,
+.gov-right {
+  width: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.gov-left img,
+.gov-right img {
+  height: 60px;
+}
+
+.gov-center {
+  flex: 1;
+  text-align: center;
+}
+
+.gov-center h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.gov-center p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .gov-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .gov-left img,
+  .gov-right img {
+    height: 45px;
+  }
+}
+
+
+/* #FADA5E, #eedc82 */
+
+body {
+  font-family: Arial, sans-serif;
+  background: lightgoldenrodyellow;
+  padding: 30px;
+  margin: 0;
+  padding-top: 10px;
+}
+
+
+h2 {
+  text-align: center;
+}
+h3 {
+  text-align: center;
+}
+
+form {
+  background: white;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+  border-radius: 6px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  align-items: center;
+  align-content: center;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  width: auto;
+  background: lightblue;
+  text-align: center;
+  display: block;          /* REQUIRED */
+  margin: 20px auto; 
+}
+button:hover {
+  background: grey;
+}
+#status {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+#calendar {
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.date-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.available {
+  background: #d4edda;
+  color: #155724;
+}
+
+.full {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ---------- Calendar Grid ---------- */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 80px);
+  gap: 12px;
+  max-width: 400px;
+  margin: 20px auto;
+  justify-content: center;
+}
+
+/* ---------- Calendar Day Card ---------- */
+.calendar-day {
+  padding: 12px 6px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Available day */
+.calendar-day.available {
+  background: #e6fffa;
+  border-color: #38b2ac;
+  color: #065f46;
+}
+
+.calendar-day.available:hover {
+  background: #99f6e4;
+  transform: translateY(-2px);
+}
+
+/* Full day */
+.calendar-day.full {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #7f1d1d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Selected day */
+.calendar-day.selected {
+  background: #2563eb;
+  border-color: #1e40af;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+}
+
+/* ---------- Slot Info Card ---------- */
+#slotInfo {
+  max-width: 420px;
+  margin: 20px auto;
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #075985;
+  justify-content: center;
+}
+.calendar-day.holiday {
+  background: #fde2e2;
+  border-color: #dc2626;
+  color: #7f1d1d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.calendar-day.holiday::after {
+  content: "HOLIDAY";
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+/* ===== TOKEN SLIP ===== */
+.slip {
+  max-width: 420px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 2px dashed #1e40af;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.slip h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.slip p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 10px 16px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.download-btn,
+.print-btn {
+
+  display: inline-block;
+  width: auto;        /* or fit-content */
+  margin: 20px auto;
+  color: white;
+}
+
+.download-btn {
+  background: #2563eb;
+}
+
+.print-btn {
+  background: #16a34a;
+}
+
+/* ===== PRINT MODE ===== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .slip, .slip * {
+    visibility: visible;
+  }
+
+  .slip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+  }
+
+  .actions {
+    display: none;
+  }
+}
+/* .calendar-day.disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  pointer-events: none;
+} */
+.calendar-day.disabled {
+  background: #fde2e2;
+  border-color: #dc2626;
+  color: #7f1d1d;
+  cursor: not-allowed;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* =========================
+   ADMIN LOGIN BUTTON
+========================= */
+#adminLoginBtn {
+  padding: 6px 14px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#adminLoginBtn:hover {
+  background-color: grey;
+}
+
