@@ -13,8 +13,8 @@ exports.generateToken = async (req, res) => {
     district,
     service_type,
     qrc,
-    mode,          // 'A' or 'W'
-    selected_date  // required only for Appointment
+    mode,          
+    selected_date
   } = req.body;
 
   if (!name || !mobile || !aadhaar_last4 || !qrc || !district || !mode) {
@@ -28,16 +28,12 @@ exports.generateToken = async (req, res) => {
     });
   }
   try {
-    // =========================
-    // BEGIN TRANSACTION
-    // =========================
+
     await new Promise((resolve, reject) =>
       db.run("BEGIN TRANSACTION", err => err ? reject(err) : resolve())
     );
 
-    // =========================
-    // 1️⃣ DUPLICATE QRC CHECK
-    // =========================
+
     const qrcExists = await new Promise((resolve, reject) => {
       db.get(
         "SELECT id FROM tokens WHERE qrc = ?",
@@ -50,9 +46,7 @@ exports.generateToken = async (req, res) => {
       throw new Error("This QRC has already been used");
     }
 
-    // =========================
-    // 2️⃣ MOBILE LIMIT CHECK
-    // =========================
+
     const tokenCount = await new Promise((resolve, reject) => {
       db.get(
         "SELECT COUNT(*) AS count FROM tokens WHERE mobile = ?",
@@ -65,9 +59,7 @@ exports.generateToken = async (req, res) => {
       throw new Error("Maximum 3 tokens allowed per mobile number");
     }
 
-    // =========================
-    // 3️⃣ DETERMINE DATE
-    // =========================
+
     let bookingDate;
     if (mode === "W") {
       bookingDate = new Date().toISOString().split("T")[0];
@@ -81,14 +73,8 @@ exports.generateToken = async (req, res) => {
       throw new Error("Walk-in cannot have appointment date");
     }
 
-    // =========================
-    // 4️⃣ RESERVE SLOT
-    // =========================
     await reserveSlot(bookingDate, mode);
 
-    // =========================
-    // 5️⃣ GENERATE TOKEN
-    // =========================
     const token = await generateDailyToken(
       name,
       mobile,
@@ -103,9 +89,6 @@ exports.generateToken = async (req, res) => {
     const priority =
       token.includes("-AP-") || token.includes("-WP-") ? "P" : "N";
 
-    // =========================
-    // 6️⃣ INSERT TOKEN
-    // =========================
     await new Promise((resolve, reject) => {
       db.run(
         `
@@ -137,9 +120,6 @@ exports.generateToken = async (req, res) => {
       );
     });
 
-    // =========================
-    // COMMIT
-    // =========================
     await new Promise((resolve, reject) =>
       db.run("COMMIT", err => err ? reject(err) : resolve())
     );
@@ -153,9 +133,7 @@ exports.generateToken = async (req, res) => {
     });
 
   } catch (err) {
-    // =========================
-    // ROLLBACK
-    // =========================
+
     await new Promise(resolve =>
       db.run("ROLLBACK", () => resolve())
     );
