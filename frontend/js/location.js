@@ -1,8 +1,6 @@
 const statusEl = document.getElementById("locationStatus");
-// ⛔ STOP location check if booking is closed
 if (window.bookingAllowed === false) {
   console.log("Booking closed — skipping geolocation");
-  // Do NOT touch locationStatus again
   return;
 }
 
