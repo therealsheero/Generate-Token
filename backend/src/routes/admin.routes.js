@@ -4,16 +4,14 @@ const router = express.Router();
 const adminController = require("../controllers/admin.controller");
 const adminAuth = require("../middlewares/adminAuth");
 
-// 🔐 LOGIN
 router.post("/login", adminController.adminLogin);
 router.get("/today", adminAuth, adminController.getTodayTokens);
 
-// ✅ CSV export
 router.get("/export-csv", adminAuth,adminController.exportTodayCSV);
 
 module.exports = router;
 
-// 📊 GET TODAY'S TOKENS (ADMIN)
+
 // router.get("/today", (req, res) => {
 //   const today = new Date().toISOString().split("T")[0];
 
@@ -31,4 +29,4 @@ module.exports = router;
 //     }
 //   );
 // });
-// ✅ JSON for dashboard
+
