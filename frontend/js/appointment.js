@@ -11,76 +11,8 @@ let selectedDate = null;
 let otpVerified = false;
 
 
-// sendOtpBtn.onclick = async () => {
-//   await fetch("/api/otp/send-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ mobile: mobile.value })
-//   });
-//   statusText.innerText = "OTP sent";
-// };
-
-// verifyOtpBtn.onclick = async () => {
-//   const res = await fetch("/api/otp/verify-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       mobile: mobile.value,
-//       otp: otp.value
-//     })
-//   });
-
-//   const result = await res.json();
-
-//   if (!res.ok) {
-//     statusText.innerText = result.message;
-//     return;
-//   }
-
-//   otpVerified = true;
-//   statusText.innerText = "✅ Mobile verified";
-// };
-// function isWithinBookingTimeIST() {
-//   const now = new Date();
-//   const istTime = new Date(
-//     now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-//   );
-
-//   const currentMinutes =
-//     istTime.getHours() * 60 + istTime.getMinutes();
-
-//   const start = 13 * 60; // 6:00 AM (as per your middleware comment)
-//   const end   = 18 * 60; // 6:00 PM
-
-//   return currentMinutes >= start && currentMinutes <= end;
-// }
-// window.addEventListener("load", () => {
-//   if (!isWithinBookingTimeIST()) {
-//     statusText.innerText =
-//       "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
-
-//     // Disable calendar clicks
-//     document
-//       .querySelectorAll(".calendar-day")
-//       .forEach(day => {
-//         day.style.pointerEvents = "none";
-//         day.style.opacity = "0.5";
-//       });
-
-//     // Disable generate button
-//     const submitBtn = document.querySelector(
-//       "#bookingForm button[type='submit']"
-//     );
-//     if (submitBtn) {
-//       submitBtn.disabled = true;
-//       submitBtn.style.opacity = "0.6";
-//       submitBtn.style.cursor = "not-allowed";
-//     }
-//   }
-// });
 
 function isValidIndianMobile(mobile) {
-  // must be 10 digits and start with 6, 7, 8, or 9
   return /^[6-9]\d{9}$/.test(mobile);
 }
 
@@ -151,14 +83,12 @@ async function loadAvailability() {
       calendar.appendChild(div);
     });
 
-    // 🚨 HANDLE WALK-IN FULL REDIRECT CASE
     if (walkinWasFull) {
       statusText.innerText =
         "ℹ️ Walk-in slots are full. Appointment booking available from tomorrow.";
 
       disableTodayInCalendar();
 
-      // clear flag so refresh doesn't keep disabling
       localStorage.removeItem("walkinFull");
     }
 
@@ -167,15 +97,8 @@ async function loadAvailability() {
   }
 }
 
-// =============================
-// FORM SUBMIT (APPOINTMENT)
-// =============================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-//   if (!otpVerified) {
-//   statusText.innerText = "Please verify OTP first";
-//   return;
-// }
   console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
 
@@ -191,7 +114,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   const payload = {
-    mode: "A", // ✅ FIXED
+    mode: "A", 
     selected_date: selectedDate,
     name: document.getElementById("name").value.trim(),
     mobile: mobileValue,
@@ -232,7 +155,4 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// =============================
-// INIT
-// =============================
 loadAvailability();
