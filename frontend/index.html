@@ -7,7 +7,6 @@
 
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- ⏰ BOOKING TIME CHECK (RUNS FIRST) -->
   <script>
     function isWithinBookingTimeIST() {
       const now = new Date();
@@ -26,7 +25,6 @@
 
 <body>
 
-<!-- 🇮🇳 GOVERNMENT HEADER -->
 <header class="gov-header">
   <div class="gov-left">
     <img src="assets/india-emblem.png" alt="Government of India Logo">
@@ -46,12 +44,10 @@
   Token Generation Portal / टोकन जनरेशन पोर्टल
 </h2>
 
-<!-- 📢 STATUS MESSAGE -->
 <p id="locationStatus" style="text-align:center; font-weight:600;">
   ⏳ Checking booking availability...
 </p>
 
-<!-- 🔘 USER ACTION BUTTONS -->
 <div style="text-align:center; margin-top:30px;">
   <button id="appointmentBtn" style="display:none;">
     📅 Book Appointment / अपॉइंटमेंट बुक करें
@@ -62,7 +58,6 @@
   </button>
 </div>
 
-<!-- 🔐 ADMIN LOGIN (ALWAYS ENABLED) -->
 <div style="text-align:center; margin-top:25px;">
   <button id="adminLoginBtn"
           onclick="window.location.href='admin-login.html'">
@@ -70,15 +65,11 @@
   </button>
 </div>
 
-<!-- ============================= -->
-<!-- 🧠 MAIN LOGIC -->
-<!-- ============================= -->
 <script>
   const statusEl = document.getElementById("locationStatus");
   const appointmentBtn = document.getElementById("appointmentBtn");
   const walkinBtn = document.getElementById("walkinBtn");
 
-  // 🚫 DISABLE USER BUTTONS (ADMIN NOT TOUCHED)
   function disableUserButtons() {
     [appointmentBtn, walkinBtn].forEach(btn => {
       btn.disabled = true;
@@ -87,7 +78,6 @@
     });
   }
 
-  // 📍 LOCATION CHECK (ONLY IF TIME IS VALID)
   async function checkLocation() {
     if (!navigator.geolocation) {
       statusEl.innerText = "❌ Geolocation not supported";
@@ -131,7 +121,6 @@
     );
   }
 
-  // 🔀 BUTTON NAVIGATION
   appointmentBtn.onclick = () => {
     window.location.href = "appointment.html";
   };
@@ -140,17 +129,15 @@
     window.location.href = "walkin.html";
   };
 
-  // 🚦 ENTRY POINT
   window.addEventListener("load", () => {
     if (!isWithinBookingTimeIST()) {
       statusEl.innerText =
         "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
 
       disableUserButtons();
-      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
+      return; 
     }
 
-    // ✅ Time valid → now check location
     checkLocation();
   });
 </script>
