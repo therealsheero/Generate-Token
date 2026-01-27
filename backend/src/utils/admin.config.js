@@ -1,4 +1,4 @@
 module.exports = {
-  ADMIN_USERNAME: "sheero",
-  ADMIN_PASSWORD: "shirodo0987"   
+  ADMIN_USERNAME: "user",
+  ADMIN_PASSWORD: "xxxx"   
 };
