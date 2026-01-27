@@ -1,10 +1,6 @@
 const db = require("../models/db");
 const { DEFAULT_WALKIN_SLOTS } = require("../utils/constants");
 
-/**
- * APPOINTMENT AVAILABILITY
- * supports ?disableToday=true
- */
 exports.getAvailability = (req, res) => {
   const disableToday = req.query.disableToday === "true";
 
@@ -55,9 +51,7 @@ exports.getAvailability = (req, res) => {
   );
 };
 
-/**
- * WALK-IN AVAILABILITY (TODAY ONLY)
- */
+
 exports.getWalkinAvailability = (req, res) => {
   const today = new Date().toISOString().split("T")[0];
 
