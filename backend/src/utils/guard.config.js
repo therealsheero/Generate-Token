@@ -1,4 +1,5 @@
 module.exports = {
-  GUARD_USERNAME: "guard",
-  GUARD_PASSWORD: "123@guard"
+  GUARD_USERNAME: "user",
+  GUARD_PASSWORD: "xxxxx"
 };
+
