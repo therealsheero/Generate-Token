@@ -11,6 +11,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json()); 
+app.use("/api/guard", require("./routes/guard.routes"));
 app.use("/api/admin", adminRoutes);
 app.use("/api", locationRoutes);
 app.get("/", (req, res) => {

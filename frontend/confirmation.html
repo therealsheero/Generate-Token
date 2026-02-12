@@ -29,6 +29,24 @@
 </div>
 <script src="js/html2pdf.bundle.min.js"></script>
 <script>
+  function getExpectedServiceTime(token) {
+    if (!token) return "";
+
+    const parts = token.split("-");
+    const num = parts[0];
+
+    if (num >= 1 && num <= 40) return "10:00 AM – 11:00 AM";
+    if (num <= 80) return "11:00 AM – 12:00 PM";
+    if (num <= 120) return "12:00 PM – 1:00 PM";
+    if (num <= 160) return "2:00 PM – 3:00 PM";
+    if (num <= 200) return "3:00 PM – 4:00 PM";
+    if (num <= 240) return "4:00 PM – 5:00 PM";
+
+    // anything beyond 240
+    return "5:00 PM – 6:00 PM";
+  }
+</script>
+<script>
   const data = JSON.parse(localStorage.getItem("tokenData"));
   const slipContent = document.getElementById("slipContent");
   const slipTitle = document.getElementById("slipTitle");
@@ -41,14 +59,34 @@
       ? "Walk-in Token Slip"
       : "Appointment Token Slip";
     slipContent.innerHTML = `
-      <p><strong>Token Number:</strong> ${data.token}</p>
+      <div class="token-box">
+        <div class="token-label">TOKEN NUMBER</div>
+        <div class="token-value">${data.token}</div>
+      </div>
+      <div style="text-align:center; margin-top:8px;">
+          <strong>Expected Service Time/ अपेक्षित सेवा समय:</strong><br>
+          <span style="font-size:16px;">
+          ${getExpectedServiceTime(data.token)}
+        </span>
+      </div>
       <p><strong>${isWalkin ? "Visit Date" : "Appointment Date"}:</strong>
         ${data.date || data.selected_date}</p>
       <p><strong>Name:</strong> ${data.name}</p>
       <p><strong>Mobile:</strong> ${data.mobile}</p>
       <p><strong>District:</strong> ${data.district}</p>
       <p><strong>Service Type:</strong> ${data.service_type}</p>
-      <p><strong>Generated On:</strong> ${new Date().toLocaleString()}</p>
+      <p><strong>Generated On:</strong>
+      ${new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+      })}
+      </p>
+
     `;
   }
 </script>
@@ -83,6 +121,20 @@
   To generate a new token, start from the home page.
 </p>
 
+<script>
+  const tokenData = localStorage.getItem("tokenData");
+
+  if (!tokenData) {
+    alert("Invalid access. Please generate a token first.");
+    window.location.href = "index.html";
+  }
+</script>
+<script>
+  // Prevent reuse of old token on refresh
+  setTimeout(() => {
+    localStorage.removeItem("tokenData");
+  }, 1000);
+</script>
 
 
 </body>

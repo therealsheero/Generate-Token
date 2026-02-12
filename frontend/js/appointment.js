@@ -1,84 +1,58 @@
-
+document.addEventListener("DOMContentLoaded", () => {
+console.log("JS loaded after dom");
 const calendar = document.getElementById("calendar");
 const slotInfo = document.getElementById("slotInfo");
 const formWrapper = document.getElementById("formWrapper");
 const form = document.getElementById("bookingForm");
 const statusText = document.getElementById("status");
-
 const walkinWasFull = localStorage.getItem("walkinFull") === "true";
 
 let selectedDate = null;
-let otpVerified = false;
+ function getDeviceId() {
+   let deviceId = localStorage.getItem("device_id");
 
+   if (!deviceId) {
+     deviceId =
+       "DEV-" +
+       crypto.randomUUID(); 
+     localStorage.setItem("device_id", deviceId);
+   }
 
-// sendOtpBtn.onclick = async () => {
-//   await fetch("/api/otp/send-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ mobile: mobile.value })
-//   });
-//   statusText.innerText = "OTP sent";
-// };
+   return deviceId;
+ }
+function disableAppointmentSubmit(msg) {
+  const submitBtn = document.querySelector("#bookingForm button[type='submit']");
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.6";
+    submitBtn.style.cursor = "not-allowed";
+  }
 
-// verifyOtpBtn.onclick = async () => {
-//   const res = await fetch("/api/otp/verify-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       mobile: mobile.value,
-//       otp: otp.value
-//     })
-//   });
+  if (statusText && msg) {
+    statusText.innerText = msg;
+  }
+}
 
-//   const result = await res.json();
+function isAppointmentTimeAllowed() {
+  const now = new Date();
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
 
-//   if (!res.ok) {
-//     statusText.innerText = result.message;
-//     return;
-//   }
+  const mins = ist.getHours() * 60 + ist.getMinutes();
+  return mins >= 6 * 60 && mins <= 23 * 60; // 6 AM – 11 PM
+}
 
-//   otpVerified = true;
-//   statusText.innerText = "✅ Mobile verified";
-// };
-// function isWithinBookingTimeIST() {
-//   const now = new Date();
-//   const istTime = new Date(
-//     now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-//   );
-
-//   const currentMinutes =
-//     istTime.getHours() * 60 + istTime.getMinutes();
-
-//   const start = 13 * 60; // 6:00 AM (as per your middleware comment)
-//   const end   = 18 * 60; // 6:00 PM
-
-//   return currentMinutes >= start && currentMinutes <= end;
-// }
-// window.addEventListener("load", () => {
-//   if (!isWithinBookingTimeIST()) {
-//     statusText.innerText =
-//       "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
-
-//     // Disable calendar clicks
-//     document
-//       .querySelectorAll(".calendar-day")
-//       .forEach(day => {
-//         day.style.pointerEvents = "none";
-//         day.style.opacity = "0.5";
-//       });
-
-//     // Disable generate button
-//     const submitBtn = document.querySelector(
-//       "#bookingForm button[type='submit']"
-//     );
-//     if (submitBtn) {
-//       submitBtn.disabled = true;
-//       submitBtn.style.opacity = "0.6";
-//       submitBtn.style.cursor = "not-allowed";
-//     }
-//   }
-// });
-
+if (!isAppointmentTimeAllowed()) {
+  const statusText = document.getElementById("status");
+  // if (statusText) {
+  //   statusText.innerText =
+  //     "⏰ Appointment booking allowed only between 6:00 AM and 11:00 PM";
+  statusText.innerText =
+        "Booking allowed only between 6:00 AM and 11:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 11:00 बजे के बीच ही की जा सकती है";
+  disableAppointmentSubmit();
+  //}
+}
 function isValidIndianMobile(mobile) {
   // must be 10 digits and start with 6, 7, 8, or 9
   return /^[6-9]\d{9}$/.test(mobile);
@@ -95,13 +69,22 @@ function disableTodayInCalendar() {
     }
   });
 }
+function shouldDisableTodayAppointment() {
+  const now = new Date();
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  const mins = ist.getHours() * 60 + ist.getMinutes();
+  return mins > 16 * 60; // after 4:00 PM
+}
 
 
 async function loadAvailability() {
   calendar.innerHTML = "Loading...";
 
   try {
-    const res = await fetch("http://localhost:5000/api/availability");
+    const res = await fetch("/api/availability?disableToday=true");
     const data = await res.json();
 
     calendar.innerHTML = "";
@@ -119,16 +102,25 @@ async function loadAvailability() {
       }`;
 
       const dateObj = new Date(d.date);
-      // div.innerHTML = `<strong>${dateObj.toDateString()}</strong>`;
       div.innerHTML = `
         <strong>${dateObj.toDateString()}</strong><br>
         <small>${d.available_slots}/${d.appointment_total} slots</small>
       `;
 
 
-      if (d.status === "AVAILABLE") {
-        div.onclick = () => {
-          selectedDate = d.date;
+//      if (d.status === "AVAILABLE") {
+//        div.onclick = () => {
+//          selectedDate = d.date;
+        const todayStr = new Date().toISOString().split("T")[0];
+        const disableToday = shouldDisableTodayAppointment();
+
+        if (
+          d.status === "AVAILABLE" &&
+          !(disableToday && d.date === todayStr)
+        ) {
+          div.onclick = () => {
+            selectedDate = d.date;
+
 
           document
             .querySelectorAll(".calendar-day")
@@ -149,6 +141,11 @@ async function loadAvailability() {
       }
 
       calendar.appendChild(div);
+      if (disableToday && d.date === todayStr) {
+        div.classList.add("disabled");
+        div.innerHTML += "<br><small>Closed for today</small>";
+      }
+
     });
 
     // 🚨 HANDLE WALK-IN FULL REDIRECT CASE
@@ -162,7 +159,8 @@ async function loadAvailability() {
       localStorage.removeItem("walkinFull");
     }
 
-  } catch {
+  } catch (err){
+    console.error(err);
     calendar.innerHTML = "Unable to load calendar";
   }
 }
@@ -176,6 +174,7 @@ form.addEventListener("submit", async (e) => {
 //   statusText.innerText = "Please verify OTP first";
 //   return;
 // }
+localStorage.removeItem("tokenData");
   console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
 
@@ -192,22 +191,24 @@ form.addEventListener("submit", async (e) => {
 
   const payload = {
     mode: "A", // ✅ FIXED
+    device_id: getDeviceId(),
     selected_date: selectedDate,
     name: document.getElementById("name").value.trim(),
     mobile: mobileValue,
     aadhaar_last4: document.getElementById("aadhaar").value.trim(),
     gender: document.getElementById("gender").value,
     age: Number(document.getElementById("age").value),
-    divyang: document.getElementById("divyang").value,
+//    divyang: document.getElementById("divyang").value,
     district: document.getElementById("district").value,
     service_type: document.getElementById("service_type").value,
     qrc: document.getElementById("qrc").value.trim()
   };
 
   statusText.innerText = "Processing...";
+  localStorage.removeItem("tokenData");
 
   try {
-    const res = await fetch("http://localhost:5000/api/generate-token", {
+    const res = await fetch("/api/generate-token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -227,7 +228,7 @@ form.addEventListener("submit", async (e) => {
 
     window.location.href = "confirmation.html";
 
-  } catch {
+  } catch (err){
     statusText.innerText = "Server not reachable";
   }
 });
@@ -236,3 +237,4 @@ form.addEventListener("submit", async (e) => {
 // INIT
 // =============================
 loadAvailability();
+});

@@ -23,16 +23,16 @@ exports.checkLocation = (req, res) => {
 
   const distanceKm = Math.round((distance / 1000) * 100) / 100;
 
-  if (distance <= GEOFENCE_RADIUS) {
-    return res.json({
-      mode: "WALKIN",
-      distance_meters: Math.round(distance),
-      distance_km: distanceKm
-    });
-  }
+//  if (distance <= GEOFENCE_RADIUS) {
+//    return res.json({
+//      mode: "WALKIN",
+//      distance_meters: Math.round(distance),
+//      distance_km: distanceKm
+//    });
+//  }
 
   return res.json({
-    mode: "APPOINTMENT",
+//    mode: "APPOINTMENT",
     distance_meters: Math.round(distance),
     distance_km: distanceKm
   });

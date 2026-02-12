@@ -4,13 +4,6 @@
   <meta charset="UTF-8" />
   <title>Admin Token Dashboard</title>
 
-  <script>
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      window.location.href = "admin-login.html";
-    }
-  </script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,19 +13,34 @@
 
     h2 {
       text-align: center;
-      margin-bottom: 5px;
     }
 
-    .note {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 15px;
+    .calendar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .date-box {
+      border: 1px solid #ccc;
+      padding: 6px;
+      cursor: pointer;
+      background: white;
+      min-width: 120px;
+      font-size: 12px;
+      line-height: 1.3;
       text-align: center;
     }
 
+    .date-box:hover {
+      background: #e0f2fe;
+    }
+
     table {
-      border-collapse: collapse;
       width: 100%;
+      border-collapse: collapse;
       background: white;
     }
 
@@ -40,172 +48,115 @@
       border: 1px solid #ccc;
       padding: 8px;
       font-size: 13px;
-      text-align: left;
     }
 
     th {
-      background-color: #f2f2f2;
+      background: #f2f2f2;
     }
 
     tr.priority {
-      background-color: #ffe6e6;
+      background: #ffe6e6;
       font-weight: bold;
     }
 
+    tr.appointment {
+      background: #fff9c4;
+    }
+
     .actions {
-      margin-bottom: 15px;
+      margin: 15px 0;
       text-align: center;
     }
 
     .actions button {
       padding: 8px 14px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      margin: 5px;
       cursor: pointer;
-      margin: 4px;
     }
+    tr.ap, tr.wp {
+  background-color: #ffe6e6; /* red */
+  font-weight: bold;
+}
 
-    .logout {
-      background: #dc2626;
-    }
+tr.an {
+  background-color: #fff9c4; /* yellow */
+}
+
+tr.wl {
+  background-color: #e6fffa; /* light green */
+}
+
+tr.wn {
+  background-color: #ffffff; /* white */
+}
+
   </style>
 </head>
 
 <body>
 
-<h2>🎫 Token Admin Dashboard</h2>
+<h2>Token Admin Dashboard</h2>
 
-<p class="note">
-  Showing <b>today’s tokens</b>. Priority tokens are highlighted.
-</p>
-
-<div class="actions">
-  <button onclick="loadTokens()">🔄 Refresh</button>
+<div class="calendar" id="calendar"></div>
+<div class="actions" id="tableActions" style="display:none;">
+  <button onclick="refreshCurrent()">🔄 Refresh</button>
   <button onclick="downloadCSV()">⬇ Download CSV</button>
-  <button class="logout" onclick="logout()">🚪 Logout</button>
+  <button onclick="logout()">🚪 Logout</button>
+
+<!-- <div id="dashboardBoxes" style="display:flex; justify-content:center; margin-top:10px;"></div> -->
+<!-- <div style="width:350px; justify-content:centre; margin-top:30px;"><canvas id="districtChart"></canvas></div> -->
+<!-- <div id="dashboardSection" style="display:flex; gap:30px; align-items:flex-start; justify-content:center; margin-top:20px;"> -->
+
+<!--   <div id="dashboardBoxes" style="flex:1;"></div> -->
+
+<!--   <div style="width:350px;"> -->
+<!--     <canvas id="districtChart"></canvas> -->
+<!--   </div> -->
+
+<!-- </div> -->
+<h3 id="dashboardHeading" 
+    style="text-align:center; margin-top:20px; display:none;">
+  Dashboard Summary
+</h3>
+<div id="dashboardSection" style="display:flex; gap:30px; align-items:flex-start; justify-content:center; margin-top:20px;">
+
+  <div id="dashboardBoxes" 
+     style="display:flex; gap:20px; align-items:flex-start;">
 </div>
 
-<table>
+
+  <div style="width:350px;">
+    <canvas id="districtChart"></canvas>
+  </div>
+
+</div>
+
+<h3 id="tableHeading" style="text-align:center; margin-top:20px; display:none;">
+  Token Details
+</h3>
+<table id="tokenTable" style="display:none;">
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Token Number</th>
-      <th>QRC</th>
+      <th>#</th>
+      <th>Token Created</th>
+      <th>Appointment / Walk-in Date</th>
+      <th>Token Count</th>
+      <th>Token Type</th>
+      <th>Full Token</th>
       <th>Name</th>
       <th>Mobile</th>
-      <th>District</th>
-      <th>Service Type</th>
       <th>Gender</th>
       <th>Age</th>
-      <th>PWD</th>
-      <th>Priority</th>
+<!--       <th>PWD</th> -->
+      <th>District</th>
+      <th>Service</th>
+      <th>Visited</th>
     </tr>
   </thead>
-  <tbody id="tokenTable">
-    <tr><td colspan="11">Loading...</td></tr>
-  </tbody>
+
+  <tbody></tbody>
 </table>
-
-<script>
-async function loadTokens() {
-  const table = document.getElementById("tokenTable");
-  table.innerHTML = "<tr><td colspan='11'>Loading...</td></tr>";
-
-  try {
-    const res = await fetch(
-      "http://localhost:5000/api/admin/today",
-      {
-        headers: {
-          "x-admin-token": localStorage.getItem("adminToken")
-        }
-      }
-    );
-
-    const data = await res.json();
-
-    if (!data.length) {
-      table.innerHTML =
-        "<tr><td colspan='11'>No tokens for today</td></tr>";
-      return;
-    }
-
-    table.innerHTML = "";
-
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-
-      if (row.priority === "P") {
-        tr.classList.add("priority");
-      }
-
-      tr.innerHTML = `
-        <td>${row.date}</td>
-        <td>${row.token}</td>
-        <td>${row.qrc}</td>
-        <td>${row.name}</td>
-        <td>${row.mobile}</td>
-        <td>${row.district}</td>
-        <td>${row.service_type}</td>
-        <td>${row.gender}</td>
-        <td>${row.age}</td>
-        <td>${row.divyang}</td>
-        <td>${row.priority}</td>
-      `;
-
-      table.appendChild(tr);
-    });
-
-  } catch (e) {
-    table.innerHTML =
-      "<tr><td colspan='11'>Failed to load admin data</td></tr>";
-  }
-}
-
-// ✅ SECURE CSV DOWNLOAD
-async function downloadCSV() {
-  try {
-    const res = await fetch(
-      "http://localhost:5000/api/admin/export-csv",
-      {
-        headers: {
-          "x-admin-token": localStorage.getItem("adminToken")
-        }
-      }
-    );
-
-    if (!res.ok) {
-      alert("Failed to download CSV");
-      return;
-    }
-
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const today = new Date().toISOString().split("T")[0];
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `tokens_${today}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
-    window.URL.revokeObjectURL(url);
-
-  } catch {
-    alert("CSV download error");
-  }
-}
-
-// 🚪 LOGOUT
-function logout() {
-  localStorage.removeItem("adminToken");
-  window.location.href = "admin-login.html";
-}
-
-// auto-load
-loadTokens();
-</script>
-
+<script src="js/chart.min.js"></script>
+<script src="js/admin.js?v=20"></script>
 </body>
 </html>

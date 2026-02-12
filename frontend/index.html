@@ -7,21 +7,7 @@
 
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- ⏰ BOOKING TIME CHECK (RUNS FIRST) -->
-  <script>
-    function isWithinBookingTimeIST() {
-      const now = new Date();
-      const ist = new Date(
-        now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-      );
 
-      const minutes = ist.getHours() * 60 + ist.getMinutes();
-      const start = 6 * 60; // 6:00 AM
-      const end   = 18 * 60; // 6:00 PM
-
-      return minutes >= start && minutes <= end;
-    }
-  </script>
 </head>
 
 <body>
@@ -45,6 +31,11 @@
 <h2 style="text-align:center;">
   Token Generation Portal / टोकन जनरेशन पोर्टल
 </h2>
+<h3 style="text-align:center; margin-top:20px; color:#b30000; font-size: 20px;">
+  Call on 1947 to register your complaint, and keep the complaint number (QRC) with you for future reference. 
+  <br>
+  अपनी शिकायत दर्ज कराने के लिए 1947 पर कॉल करें और भविष्य में संदर्भ के लिए शिकायत संख्या (क्यूआरसी) अपने पास रखें।
+</h3>
 
 <!-- 📢 STATUS MESSAGE -->
 <p id="locationStatus" style="text-align:center; font-weight:600;">
@@ -68,6 +59,10 @@
           onclick="window.location.href='admin-login.html'">
     🔐 Admin Login / व्यवस्थापक लॉगिन
   </button>
+  <button id="guardLoginBtn"
+          onclick="window.location.href='guard-login.html'">
+    🛡️ Guard Login / गार्ड लॉगिन
+  </button>
 </div>
 
 <!-- ============================= -->
@@ -77,15 +72,17 @@
   const statusEl = document.getElementById("locationStatus");
   const appointmentBtn = document.getElementById("appointmentBtn");
   const walkinBtn = document.getElementById("walkinBtn");
+  const guardLoginBtn = document.getElementById("guardLoginBtn");
+  appointmentBtn.style.display = "inline-block";
 
   // 🚫 DISABLE USER BUTTONS (ADMIN NOT TOUCHED)
-  function disableUserButtons() {
-    [appointmentBtn, walkinBtn].forEach(btn => {
-      btn.disabled = true;
-      btn.style.opacity = "0.6";
-      btn.style.cursor = "not-allowed";
-    });
-  }
+//  function disableUserButtons() {
+//    [appointmentBtn, walkinBtn].forEach(btn => {
+//      btn.disabled = true;
+//      btn.style.opacity = "0.6";
+//      btn.style.cursor = "not-allowed";
+//    });
+//  }
 
   // 📍 LOCATION CHECK (ONLY IF TIME IS VALID)
   async function checkLocation() {
@@ -99,7 +96,7 @@
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
-          const res = await fetch("http://localhost:5000/api/location-check", {
+          const res = await fetch("/api/location-check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -118,7 +115,8 @@
           if (data.distance_meters <= 100) {
             walkinBtn.style.display = "inline-block";
           } else {
-            appointmentBtn.style.display = "inline-block";
+//            appointmentBtn.style.display = "inline-block";
+              walkinBtn.style.display = "none";
           }
 
         } catch {
@@ -142,13 +140,13 @@
 
   // 🚦 ENTRY POINT
   window.addEventListener("load", () => {
-    if (!isWithinBookingTimeIST()) {
-      statusEl.innerText =
-        "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
-
-      disableUserButtons();
-      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
-    }
+//    if (!isWithinBookingTimeIST()) {
+//      statusEl.innerText =
+//        "Booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 4:00 बजे के बीच ही की जा सकती है।";
+//
+//      disableUserButtons();
+//      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
+//    }
 
     // ✅ Time valid → now check location
     checkLocation();

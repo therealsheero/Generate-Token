@@ -1,8 +1,8 @@
-const { ADMIN_TOKEN } = require("../utils/admin.config");
+const { ADMIN_TOKEN } =  require("../utils.admin.config");
 module.exports = (req, res, next) => {
   const token = req.headers["x-admin-token"];
 
-  if (!token || token !== "ADMIN_TOKEN") {
+  if (token !== "ADMIN_AUTH_TOKEN") {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

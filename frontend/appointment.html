@@ -34,6 +34,11 @@
 <hr />
 
 <div id="formWrapper" style="display:none;">
+  <h3 style="color:red; font-weight:bold; text-align:center; line-height:1.4;">
+    DISCLAIMER: THIS SERVICE IS FREE OF COST. In one day you will only get one token. Kindly fill the details properly, in case of wrong details your token will be cancelled.
+    <br>
+    अस्वीकरण: यह सेवा नि:शुल्क है। एक दिन में आपको केवल एक ही टोकन मिलेगा। कृपया विवरण सही ढंग से भरें, गलत जानकारी होने पर आपका टोकन रद्द कर दिया जाएगा।
+  </h3>
   <h3>Applicant Details/ आवेदक का विवरण</h3>
 
   <form id="bookingForm">
@@ -42,37 +47,31 @@
     <input id="name" required>
 
     <label>Mobile/ मोबाइल</label>
+    <label>OTP may be sent on the mobile number/ मोबाइल नंबर पर ओटीपी भेजा जा सकता है</label>
     <input id="mobile" pattern="[0-9]{10}" maxlength="10" required>
-    <!-- <button type="button" id="sendOtpBtn">Send OTP</button>
-
-    <input id="otp" placeholder="Enter OTP" maxlength="6" />
-
-    <button type="button" id="verifyOtpBtn">Verify OTP</button> -->
-
 
     <label>Aadhaar (Last 4)/ आधार (अंतिम 4 अंक)</label>
     <input id="aadhaar" type="text" pattern="[0-9]{4}" maxlength="4" inputmode="numeric" placeholder="XXXX" required />
 
-    <label>Gender/ लिंग</label>
+    <label> Gender/ लिंग</label>
     <select id="gender">
-      <option value="">-- Select Gender --</option>
       <option value="Male">Male/ पुरुष</option>
       <option value="Female">Female/ महिला</option>
       <option value="Other">Other/ अन्य</option>
     </select>
 
     <label>Age/ आयु</label>
-    <input id="age" type="number" required>
+    <input id="age" type="number" min = "0" max = "99" step = "1" required>
 
-    <label>Divyang/ दिव्यांग</label>
-    <select id="divyang">
-      <option value="No">No/ नहीं</option>
-      <option value="Yes">Yes/ हाँ</option>
-    </select>
+<!--     <label>Divyang/ दिव्यांग</label> -->
+<!--     <label>Supporting documents will be required to shown before request is entertained / अनुरोध स्वीकार करने से पहले सहायक दस्तावेज दिखाने होंगे</label> -->
+<!--     <select id="divyang"> -->
+<!--       <option value="No">No/ नहीं</option> -->
+<!--       <option value="Yes">Yes/ हाँ</option> -->
+<!--     </select> -->
 
-    <label>District/ ज़िला</label>
+    <label>District/ ज़िला( आपका जिला)</label>
     <select id="district" required>
-        <option value="">-- Select District --</option>
         <option>Agra/आगरा</option>
         <option>Aligarh/अलीगढ</option>
         <option>Ambedkar Nagar/अंबेडकर नगर</option>
@@ -149,26 +148,32 @@
         <option>Unnao/उन्नाव</option>
         <option>Varanasi/वाराणसी</option>
       </select>
-    </select>
 
     <label for="service_type">Service Type / सेवा प्रकार</label>
+    <label>To generate QRC call on 1947 for complaint/ क्यूआरसी उत्पन्न करने के लिए 1947 पर कॉल करें</label>
     <select id="service_type">
-      <option>-- Select Option --</option>
-      <option>Grievance Related to DoB/ जन्मतिथि से संबंधित शिकायत</option>
-      <option>Grievance Related to Name/ नाम से संबंधित शिकायत</option>
+      <option>DoB/ जन्मतिथि</option>
+      <option>Name/ नाम</option>
       <option>Aadhaar Suspended/ आधार कार्ड निलंबित</option>
-      <option>General Grievance/ सामान्य शिकायत</option>
+      <option>Advised to visit RO/ RO पर जाने की सलाह दी गई</option>
+      <option>Gender/ लिंग</option>
+      <option>None of the above/ इनमे से कोई भी नहीं</option>
     </select>
 
     <label>QRC/ क्यूआरसी संख्या (14 अंक)</label>
       <input id="qrc" type="text"
-             pattern="[A-Za-z0-9]{14}"
+             pattern="^S[A-Za-z0-9]{10}000$"
              maxlength="14"
-             placeholder="SXXXXXXXXX000"
+             placeholder="SXXXXXXXXX000" title="The QRC must start with S and end with 000."
              required />
              
     <button type="submit">Generate Appointment Token</button>
   </form>
+    <h3 style="color:black; font-weight:bold; text-align:center; line-height:1.4; font-size:8px;">
+    DISCLAIMER: RESIDENTS ARE SOLELY RESPONSIBLE FOR THE SECURITY OF THEIR DATA.
+    <br>
+    अस्वीकरण: निवासियों को अपने डेटा की सुरक्षा की पूर्ण जिम्मेदारी लेनी होगी। 
+  </h3>
 </div>
 
 <p id="status"></p>

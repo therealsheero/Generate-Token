@@ -20,7 +20,7 @@ async function checkLocation() {
 
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
-      const res = await fetch("http://localhost:5000/api/location-check", {
+      const res = await fetch("/api/location-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

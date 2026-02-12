@@ -37,7 +37,11 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS daily_token_counters (
       date TEXT PRIMARY KEY,
       priority_count INTEGER DEFAULT 0,
-      normal_count INTEGER DEFAULT 0
+      normal_count INTEGER DEFAULT 0,
+      wp_count INTEGER DEFAULT 0,
+      wn_count INTEGER DEFAULT 0,
+      ap_count INTEGER DEFAULT 0,
+      an_count INTEGER DEFAULT 0
     )
   `);
   db.run(`

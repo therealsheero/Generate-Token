@@ -1,7 +1,3 @@
-// alert("JS FILE LOADED");
-// console.log("FORM:", document.getElementById("bookingForm"));
-// console.log("STATUS:", document.getElementById("status"));
-
 const slotInfo = document.getElementById("slotInfo");
 const statusText = document.getElementById("status");
 const infoText = document.getElementById("infoText");
@@ -9,60 +5,76 @@ const form = document.getElementById("bookingForm");
 const formWrapper = document.getElementById("formWrapper");
 
 const distance = Number(localStorage.getItem("distance_meters") || 9999);
-let otpVerified = false;
+function getDeviceId() {
+  let deviceId = localStorage.getItem("device_id");
 
-// sendOtpBtn.onclick = async () => {
-//   await fetch("/api/otp/send-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ mobile: mobile.value })
-//   });
-//   statusText.innerText = "OTP sent";
-// };
+  if (!deviceId) {
+    deviceId =
+      "DEV-" +
+      crypto.randomUUID(); // modern browsers
+    localStorage.setItem("device_id", deviceId);
+  }
 
-// verifyOtpBtn.onclick = async () => {
-//   const res = await fetch("/api/otp/verify-otp", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       mobile: mobile.value,
-//       otp: otp.value
-//     })
-//   });
+  return deviceId;
+}
 
-//   const result = await res.json();
+//function disableWalkinSubmit(msg) {
+//  const submitBtn = document.querySelector("#bookingForm button[type='submit']");
+//  if (submitBtn) {
+//    submitBtn.disabled = true;
+//    submitBtn.style.opacity = "0.6";
+//    submitBtn.style.cursor = "not-allowed";
+//  }
+//
+//  if (statusText && msg) {
+//    statusText.innerText = msg;
+//  }
+//}
+function disableWalkinForm(msg) {
+  if (form) {
+    // disable all form controls
+    const elements = form.querySelectorAll("input, select, button, textarea");
+    elements.forEach(el => {
+      el.disabled = true;
+    });
 
-//   if (!res.ok) {
-//     statusText.innerText = result.message;
-//     return;
-//   }
+    // optional visual feedback
+    form.style.opacity = "0.6";
+    form.style.pointerEvents = "none";
+  }
 
-//   otpVerified = true;
-//   statusText.innerText = "✅ Mobile verified";
-// };
-// function isWithinBookingTimeIST() {
-//   const now = new Date();
-//   const istTime = new Date(
-//     now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-//   );
+  if (statusText && msg) {
+    statusText.innerText = msg;
+  }
+}
 
-//   const currentMinutes =
-//     istTime.getHours() * 60 + istTime.getMinutes();
+function isWalkinTimeAllowed() {
+  const now = new Date();
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
 
-//   const start = 13 * 60; // 6:00 AM (as per your middleware comment)
-//   const end   = 18 * 60; // 6:00 PM
+  const mins = ist.getHours() * 60 + ist.getMinutes();
+  return mins >= 6 * 60 && mins <= 16 * 60; // 6 AM – 4 PM
+}
 
-//   return currentMinutes >= start && currentMinutes <= end;
-// }
-// window.addEventListener("load", () => {
-//   if (!isWithinBookingTimeIST()) {
-//     statusText.innerText =
-//       "Booking allowed only between 6:00 AM and 6:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।";
+if (!isWalkinTimeAllowed()) {
+  const statusText = document.getElementById("status");
+  disableWalkinForm(
+    "Walk-in booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 4:00 बजे के बीच ही की जा सकती है।"
+  );
+}
+function isTodayHoliday() {
+  const today = new Date();
+  const day = today.getDay();
+  return day === 0 || day === 6;
+}
 
-//     formWrapper.style.display = "none";
-//     slotInfo.style.display = "none";
-//   }
-// });
+if (isTodayHoliday()) {
+  disableWalkinSubmit(
+    "❌ Walk-in service not available on holidays / weekends"
+  );
+}
 
 function isValidIndianMobile(mobile) {
   // must be 10 digits and start with 6, 7, 8, or 9
@@ -82,7 +94,7 @@ if (distance > 100) {
 // =============================
 async function loadWalkinAvailability() {
   try {
-    const res = await fetch("http://localhost:5000/api/walkin-availability");
+    const res = await fetch("/api/walkin-availability");
     const data = await res.json();
 
     if (data.available_slots <= 0) {
@@ -124,6 +136,7 @@ form.addEventListener("submit", async (e) => {
 //   statusText.innerText = "Please verify OTP first";
 //   return;
 // }
+localStorage.removeItem("tokenData");
   console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
 
@@ -135,21 +148,23 @@ form.addEventListener("submit", async (e) => {
 
   const payload = {
     mode: "W",
+    device_id: getDeviceId(),
     name: document.getElementById("name").value.trim(),
     mobile: mobileValue,
     aadhaar_last4: document.getElementById("aadhaar").value.trim(),
     gender: document.getElementById("gender").value,
     age: Number(document.getElementById("age").value),
-    divyang: document.getElementById("divyang").value,
+//    divyang: document.getElementById("divyang").value,
     district: document.getElementById("district").value,
     service_type: document.getElementById("service_type").value,
     qrc: document.getElementById("qrc").value.trim()
   };
 
   statusText.innerText = "Processing...";
+  localStorage.removeItem("tokenData");
 
   try {
-    const res = await fetch("http://localhost:5000/api/generate-token", {
+    const res = await fetch("/api/generate-token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
