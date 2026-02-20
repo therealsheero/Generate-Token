@@ -11,7 +11,7 @@ function getDeviceId() {
   if (!deviceId) {
     deviceId =
       "DEV-" +
-      crypto.randomUUID(); // modern browsers
+      crypto.randomUUID();
     localStorage.setItem("device_id", deviceId);
   }
 
@@ -32,13 +32,11 @@ function getDeviceId() {
 //}
 function disableWalkinForm(msg) {
   if (form) {
-    // disable all form controls
     const elements = form.querySelectorAll("input, select, button, textarea");
     elements.forEach(el => {
       el.disabled = true;
     });
 
-    // optional visual feedback
     form.style.opacity = "0.6";
     form.style.pointerEvents = "none";
   }
@@ -88,17 +86,12 @@ if (distance > 100) {
   infoText.innerText = "✅ You are inside office premises";
   formWrapper.style.display = "block";
 }
-
-// =============================
-// LOAD WALK-IN AVAILABILITY
-// =============================
 async function loadWalkinAvailability() {
   try {
     const res = await fetch("/api/walkin-availability");
     const data = await res.json();
 
     if (data.available_slots <= 0) {
-      // 🔴 WALK-IN FULL → redirect to appointment
       localStorage.setItem("walkinFull", "true");
 
       statusText.innerText =
@@ -111,7 +104,6 @@ async function loadWalkinAvailability() {
       return;
     }
 
-    // ✅ slots available
     localStorage.removeItem("walkinFull");
 
     slotInfo.innerHTML = `
@@ -125,11 +117,6 @@ async function loadWalkinAvailability() {
     slotInfo.innerText = "Unable to load walk-in availability";
   }
 }
-
-
-// =============================
-// FORM SUBMIT
-// =============================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 //   if (!otpVerified) {
@@ -176,8 +163,6 @@ localStorage.removeItem("tokenData");
       statusText.innerText = result.message;
       return;
     }
-
-    // ✅ CRITICAL FIX
     localStorage.setItem(
       "tokenData",
       JSON.stringify({ ...payload, ...result })
