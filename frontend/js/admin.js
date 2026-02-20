@@ -1,4 +1,3 @@
-// AUTH CHECK (ONLY HERE)
 console.log("ADMIN JS LOADED");
 const adminToken = localStorage.getItem("adminToken");
 if (!adminToken) {
@@ -32,9 +31,6 @@ function renderSummaryTable(data) {
 
   let sr = 1;
 
-  // ======================
-  // APPOINTMENTS & WALKINS
-  // ======================
   data.summary.forEach(row => {
     const label = row.mode === "A" ? "Appointments" : "Walk-ins";
     const total = row.total;
@@ -50,10 +46,6 @@ function renderSummaryTable(data) {
       </tr>
     `;
   });
-
-  // ======================
-  // GENDER
-  // ======================
   data.gender.forEach(g => {
     html += `
       <tr style="background: #f1f8e9;">
@@ -66,9 +58,6 @@ function renderSummaryTable(data) {
     `;
   });
 
-  // ======================
-  // AGE GROUPS
-  // ======================
   html += `
     <tr style ="background: #f3e5f5;">
       <td>${sr++}</td>
@@ -95,9 +84,6 @@ function renderSummaryTable(data) {
 
   html += `</table><br><br>`;
 
-  // ======================
-  // SERVICE TABLE
-  // ======================
  html += `
     <table style="width:100%; border-collapse:collapse; background:white; font-size:12px;">
       <tr>
@@ -260,10 +246,6 @@ async function loadCalendar() {
   });
 }
 
-
-// =======================
-// LOAD TOKENS FOR DATE
-// =======================
 async function loadTokens(date) {
   
   currentDate = date;
@@ -331,9 +313,6 @@ currentTableData = data; // ?? store for CSV
   });
 }
 
-// =======================
-// CSV DOWNLOAD
-// =======================
 function downloadCSV() {
   if (!currentTableData.length) {
     alert("No data to export");
@@ -393,13 +372,9 @@ function downloadCSV() {
   URL.revokeObjectURL(url);
 }
 
-
-// =======================
-// LOGOUT
-// =======================
 function logout() {
   localStorage.removeItem("adminToken");
   window.location.href = "admin-login.html";
 }
-// INIT
 loadCalendar();
+
