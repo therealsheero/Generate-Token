@@ -147,15 +147,12 @@ async function loadAvailability() {
       }
 
     });
-
-    // 🚨 HANDLE WALK-IN FULL REDIRECT CASE
     if (walkinWasFull) {
       statusText.innerText =
         "ℹ️ Walk-in slots are full. Appointment booking available from tomorrow.";
 
       disableTodayInCalendar();
 
-      // clear flag so refresh doesn't keep disabling
       localStorage.removeItem("walkinFull");
     }
 
@@ -165,15 +162,8 @@ async function loadAvailability() {
   }
 }
 
-// =============================
-// FORM SUBMIT (APPOINTMENT)
-// =============================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-//   if (!otpVerified) {
-//   statusText.innerText = "Please verify OTP first";
-//   return;
-// }
 localStorage.removeItem("tokenData");
   console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
@@ -190,7 +180,7 @@ localStorage.removeItem("tokenData");
   }
 
   const payload = {
-    mode: "A", // ✅ FIXED
+    mode: "A",
     device_id: getDeviceId(),
     selected_date: selectedDate,
     name: document.getElementById("name").value.trim(),
@@ -233,8 +223,5 @@ localStorage.removeItem("tokenData");
   }
 });
 
-// =============================
-// INIT
-// =============================
 loadAvailability();
 });
