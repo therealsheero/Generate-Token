@@ -25,13 +25,9 @@ async function undoVisited(tokenId) {
     body: JSON.stringify({ token_id: tokenId })
   });
 
-  loadTokens(); // refresh
+  loadTokens();
 }
 
-
-// =======================
-// DATE FORMATTERS (IST FIXED)
-// =======================
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -61,9 +57,6 @@ function parseToken(token) {
   };
 }
 
-// =======================
-// LOAD TODAY TOKENS ONLY
-// =======================
 async function loadTokens() {
   tbody.innerHTML = "<tr><td colspan='13'>Loading...</td></tr>";
 
@@ -154,9 +147,6 @@ async function markVisited(tokenId) {
   loadTokens();
 }
 
-// =======================
-// CSV DOWNLOAD (TODAY ONLY)
-// =======================
 function downloadCSV() {
   if (!currentTableData.length) {
     alert("No data to export");
@@ -214,16 +204,11 @@ function downloadCSV() {
   URL.revokeObjectURL(url);
 }
 
-// =======================
-// LOGOUT
-// =======================
 function logout() {
   localStorage.removeItem("guardToken");
   window.location.href = "guard-login.html";
 }
 
-// =======================
-// INIT
-// =======================
 loadTokens();
+
 
