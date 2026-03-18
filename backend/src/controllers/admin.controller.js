@@ -92,10 +92,6 @@ exports.getDateDashboard = (req, res) => {
   if (!date) {
     return res.status(400).json({ message: "Date required" });
   }
-
-  // =========================
-  // APPOINTMENT + WALKIN
-  // =========================
   const summaryQuery = `
     SELECT
       mode,
@@ -106,10 +102,6 @@ exports.getDateDashboard = (req, res) => {
     WHERE date = ?
     GROUP BY mode
   `;
-
-  // =========================
-  // GENDER
-  // =========================
   const genderQuery = `
   SELECT
     gender,
@@ -120,11 +112,6 @@ exports.getDateDashboard = (req, res) => {
   WHERE date = ?
   GROUP BY gender
 `;
-
-
-  // =========================
-  // AGE GROUPS
-  // =========================
   const ageQuery = `
   SELECT
     SUM(CASE WHEN age BETWEEN 0 AND 5 THEN 1 ELSE 0 END) AS age_0_5,
@@ -141,11 +128,6 @@ exports.getDateDashboard = (req, res) => {
   FROM tokens
   WHERE date = ?
 `;
-
-
-  // =========================
-  // SERVICE TYPES
-  // =========================
   const serviceQuery = `
     SELECT
       service_type,
