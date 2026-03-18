@@ -42,7 +42,7 @@
     if (num <= 200) return "3:00 PM – 4:00 PM";
     if (num <= 240) return "4:00 PM – 5:00 PM";
 
-    // anything beyond 240
+    //beyond anything give 5-6 only
     return "5:00 PM – 6:00 PM";
   }
 </script>
@@ -130,7 +130,6 @@
   }
 </script>
 <script>
-  // Prevent reuse of old token on refresh
   setTimeout(() => {
     localStorage.removeItem("tokenData");
   }, 1000);
