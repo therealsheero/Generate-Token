@@ -81,7 +81,7 @@ async function loadTokens() {
     const tr = document.createElement("tr");
 
     const { count, type } = parseToken(row.token);
-    tr.classList.add(type.toLowerCase()); // ap / an / wp / wn / wl
+    tr.classList.add(type.toLowerCase());
     let visitedCell = "";
 //    tr.innerHTML = `
 //      <td>${i + 1}</td>
@@ -142,8 +142,6 @@ async function markVisited(tokenId) {
     },
     body: JSON.stringify({ token_id: tokenId })
   });
-
-  // refresh table (real-time feel)
   loadTokens();
 }
 
