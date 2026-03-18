@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-console.log("JS loaded after dom");
 const calendar = document.getElementById("calendar");
 const slotInfo = document.getElementById("slotInfo");
 const formWrapper = document.getElementById("formWrapper");
@@ -47,14 +46,14 @@ if (!isAppointmentTimeAllowed()) {
   const statusText = document.getElementById("status");
   // if (statusText) {
   //   statusText.innerText =
-  //     "⏰ Appointment booking allowed only between 6:00 AM and 11:00 PM";
+  //     "Appointment booking allowed only between 6:00 AM and 11:00 PM";
   statusText.innerText =
         "Booking allowed only between 6:00 AM and 11:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 11:00 बजे के बीच ही की जा सकती है";
   disableAppointmentSubmit();
   //}
 }
 function isValidIndianMobile(mobile) {
-  // must be 10 digits and start with 6, 7, 8, or 9
+  //validate mobile number format
   return /^[6-9]\d{9}$/.test(mobile);
 }
 
@@ -76,7 +75,7 @@ function shouldDisableTodayAppointment() {
   );
 
   const mins = ist.getHours() * 60 + ist.getMinutes();
-  return mins > 16 * 60; // after 4:00 PM
+  return mins > 16 * 60; //block at 4:00pm as office closes as 6:00pm :)
 }
 
 
@@ -149,7 +148,7 @@ async function loadAvailability() {
     });
     if (walkinWasFull) {
       statusText.innerText =
-        "ℹ️ Walk-in slots are full. Appointment booking available from tomorrow.";
+        "Walk-in slots are full. Appointment booking available from tomorrow.";
 
       disableTodayInCalendar();
 
@@ -165,7 +164,6 @@ async function loadAvailability() {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 localStorage.removeItem("tokenData");
-  console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
 
   if (!isValidIndianMobile(mobileValue)) {
