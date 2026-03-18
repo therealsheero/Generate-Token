@@ -1,8 +1,6 @@
 const db = require("../models/db");
 const { GUARD_USERNAME, GUARD_PASSWORD } =
   require("../utils/guard.config");
-
-// LOGIN
 exports.guardLogin = (req, res) => {
   const { username, password } = req.body;
 
@@ -18,8 +16,6 @@ exports.guardLogin = (req, res) => {
 
   res.status(401).json({ message: "Invalid credentials" });
 };
-
-// TODAY TOKENS ONLY
 exports.getTodayTokens = (req, res) => {
   const today = new Date().toISOString().split("T")[0];
 
