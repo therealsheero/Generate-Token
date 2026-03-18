@@ -1,4 +1,4 @@
-/* ---------- Government Header ---------- */
+/* if the css looks gpt generate because it is, because i am bad at UI :( */
 .gov-header {
   display: flex;
   align-items: center;
@@ -38,7 +38,6 @@
   opacity: 0.9;
 }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 600px) {
   .gov-header {
     flex-direction: column;
@@ -50,9 +49,6 @@
     height: 45px;
   }
 }
-
-
-/* #FADA5E, #eedc82 */
 
 body {
   font-family: Arial, sans-serif;
@@ -100,7 +96,7 @@ button {
   width: auto;
   background: lightblue;
   text-align: center;
-  display: block;          /* REQUIRED */
+  display: block;        
   margin: 20px auto; 
 }
 button:hover {
@@ -134,8 +130,6 @@ button:hover {
   background: #f8d7da;
   color: #721c24;
 }
-
-/* ---------- Calendar Grid ---------- */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 80px);
@@ -144,8 +138,6 @@ button:hover {
   margin: 20px auto;
   justify-content: center;
 }
-
-/* ---------- Calendar Day Card ---------- */
 .calendar-day {
   padding: 12px 6px;
   text-align: center;
@@ -161,7 +153,6 @@ button:hover {
   user-select: none;
 }
 
-/* Available day */
 .calendar-day.available {
   background: #e6fffa;
   border-color: #38b2ac;
@@ -173,7 +164,6 @@ button:hover {
   transform: translateY(-2px);
 }
 
-/* Full day */
 .calendar-day.full {
   background: #fee2e2;
   border-color: #ef4444;
@@ -181,16 +171,12 @@ button:hover {
   cursor: not-allowed;
   opacity: 0.6;
 }
-
-/* Selected day */
 .calendar-day.selected {
   background: #2563eb;
   border-color: #1e40af;
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
 }
-
-/* ---------- Slot Info Card ---------- */
 #slotInfo {
   max-width: 420px;
   margin: 20px auto;
@@ -218,8 +204,6 @@ button:hover {
   margin-top: 4px;
   font-weight: bold;
 }
-
-/* ===== TOKEN SLIP ===== */
 .slip {
   max-width: 420px;
   margin: 30px auto;
@@ -238,8 +222,6 @@ button:hover {
   margin: 6px 0;
   font-size: 14px;
 }
-
-/* ===== ACTION BUTTONS ===== */
 .actions {
   text-align: center;
   margin-top: 20px;
@@ -258,7 +240,7 @@ button:hover {
 .print-btn {
 
   display: inline-block;
-  width: auto;        /* or fit-content */
+  width: auto;       
   margin: 20px auto;
   color: white;
 }
@@ -271,7 +253,6 @@ button:hover {
   background: #16a34a;
 }
 
-/* ===== PRINT MODE ===== */
 @media print {
   body * {
     visibility: hidden;
@@ -308,9 +289,6 @@ button:hover {
   pointer-events: none;
 }
 
-/* =========================
-   ADMIN LOGIN BUTTON
-========================= */
 #adminLoginBtn {
   padding: 6px 14px;
   background-color: #2563eb;
@@ -325,12 +303,6 @@ button:hover {
 #adminLoginBtn:hover {
   background-color: grey;
 }
-
-
-
-/* =========================
-   TOKEN DISPLAY (BIG & BOLD)
-========================= */
 .token-box {
   text-align: center;
   margin: 20px 0 30px;
@@ -348,8 +320,8 @@ button:hover {
 }
 
 .token-value {
-  font-size: 42px;       /* ?? BIG */
-  font-weight: 900;      /* ?? BOLD */
+  font-size: 42px;       
+  font-weight: 900;      
   letter-spacing: 3px;
   color: #000;
 }
