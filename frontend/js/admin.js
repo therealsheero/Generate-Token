@@ -1,4 +1,3 @@
-console.log("ADMIN JS LOADED");
 const adminToken = localStorage.getItem("adminToken");
 if (!adminToken) {
   window.location.href = "admin-login.html";
@@ -196,9 +195,9 @@ function formatDateTime(dt) {
 function parseToken(token) {
   const parts = token.split("-");
   return {
-    count: parts[0],     // 001
-    type: parts[1],      // WN / AP / WL
-    aadhaar: parts[2]    // 1234
+    count: parts[0],     //get token number - 001
+    type: parts[1],      //get token type - WN / AP / WL
+    aadhaar: parts[2]    //get aadhaar last four digits - 1234
   };
 }
 
@@ -264,7 +263,7 @@ document.getElementById("dashboardHeading").style.display = "block";
 document.getElementById("dashboardHeading").innerText =
   "Dashboard Summary for " + formatDate(date);
 
-currentTableData = data; // ?? store for CSV
+currentTableData = data; 
   tbody.innerHTML = "";
 
   data.forEach((row, i) => {
@@ -273,12 +272,10 @@ currentTableData = data; // ?? store for CSV
     //if (row.priority === "P") tr.classList.add("priority");
     // if (row.mode === "A") tr.classList.add("appointment");
 //    if (row.priority === "P") {
-//      tr.classList.add("priority");     // RED
+//      tr.classList.add("priority");     
 //    } else if (row.mode === "A") {
-//      tr.classList.add("appointment");  // YELLOW
+//      tr.classList.add("appointment");  
 //    }
-    
-    
       const tokenParts = row.token.split("-");
       const tokenCount = tokenParts[0];
       const tokenType  = tokenParts[1];
