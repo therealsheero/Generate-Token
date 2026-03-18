@@ -1,5 +1,3 @@
-// console.log("🚀 INIT.JS EXECUTED");
-
 const db = require("./db");
 
 db.serialize(() => {
