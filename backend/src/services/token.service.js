@@ -63,11 +63,9 @@ async function generateDailyToken(
   gender,
   divyang,
   mode,
-  tokenType   // ?? NEW: AN / AP / WN / WP / WL
+  tokenType  
 ) {
   const priority = getPriorityFlag(age, gender, divyang);
-
-  // ensure row exists
   await new Promise((resolve, reject) => {
     db.run(
       `INSERT OR IGNORE INTO daily_token_counters (date, last_token)
@@ -77,7 +75,7 @@ async function generateDailyToken(
     );
   });
 
-  // ?? GLOBAL COUNT
+  //global count sahi kiya
   const seq = await new Promise((resolve, reject) => {
     db.run(
       `UPDATE daily_token_counters
@@ -95,13 +93,13 @@ async function generateDailyToken(
     );
   });
 
-  // ? keep old counters updated (admin stats safe)
+  //purane counters phir bhi rakhe taki admin analysis easy rahe
   const map = {
     AP: "ap_count",
     AN: "an_count",
     WP: "wp_count",
     WN: "wn_count",
-    WL: "wn_count" // WL counts as WN
+    WL: "wn_count"
   };
 
   const col = map[tokenType];
