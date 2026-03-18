@@ -1,6 +1,5 @@
 const statusEl = document.getElementById("locationStatus");
 if (window.bookingAllowed === false) {
-  console.log("Booking closed — skipping geolocation");
   return;
 }
 
