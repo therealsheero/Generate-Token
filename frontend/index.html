@@ -11,8 +11,6 @@
 </head>
 
 <body>
-
-<!-- 🇮🇳 GOVERNMENT HEADER -->
 <header class="gov-header">
   <div class="gov-left">
     <img src="assets/india-emblem.png" alt="Government of India Logo">
@@ -36,13 +34,9 @@
   <br>
   अपनी शिकायत दर्ज कराने के लिए 1947 पर कॉल करें और भविष्य में संदर्भ के लिए शिकायत संख्या (क्यूआरसी) अपने पास रखें।
 </h3>
-
-<!-- 📢 STATUS MESSAGE -->
 <p id="locationStatus" style="text-align:center; font-weight:600;">
   ⏳ Checking booking availability...
 </p>
-
-<!-- 🔘 USER ACTION BUTTONS -->
 <div style="text-align:center; margin-top:30px;">
   <button id="appointmentBtn" style="display:none;">
     📅 Book Appointment / अपॉइंटमेंट बुक करें
@@ -52,8 +46,6 @@
     🚶 Generate Walk-in Token / वॉक-इन टोकन जनरेट करें
   </button>
 </div>
-
-<!-- 🔐 ADMIN LOGIN (ALWAYS ENABLED) -->
 <div style="text-align:center; margin-top:25px;">
   <button id="adminLoginBtn"
           onclick="window.location.href='admin-login.html'">
@@ -64,18 +56,12 @@
     🛡️ Guard Login / गार्ड लॉगिन
   </button>
 </div>
-
-<!-- ============================= -->
-<!-- 🧠 MAIN LOGIC -->
-<!-- ============================= -->
 <script>
   const statusEl = document.getElementById("locationStatus");
   const appointmentBtn = document.getElementById("appointmentBtn");
   const walkinBtn = document.getElementById("walkinBtn");
   const guardLoginBtn = document.getElementById("guardLoginBtn");
   appointmentBtn.style.display = "inline-block";
-
-  // 🚫 DISABLE USER BUTTONS (ADMIN NOT TOUCHED)
 //  function disableUserButtons() {
 //    [appointmentBtn, walkinBtn].forEach(btn => {
 //      btn.disabled = true;
@@ -83,8 +69,6 @@
 //      btn.style.cursor = "not-allowed";
 //    });
 //  }
-
-  // 📍 LOCATION CHECK (ONLY IF TIME IS VALID)
   async function checkLocation() {
     if (!navigator.geolocation) {
       statusEl.innerText = "❌ Geolocation not supported";
@@ -128,8 +112,6 @@
       }
     );
   }
-
-  // 🔀 BUTTON NAVIGATION
   appointmentBtn.onclick = () => {
     window.location.href = "appointment.html";
   };
@@ -137,18 +119,14 @@
   walkinBtn.onclick = () => {
     window.location.href = "walkin.html";
   };
-
-  // 🚦 ENTRY POINT
   window.addEventListener("load", () => {
 //    if (!isWithinBookingTimeIST()) {
 //      statusEl.innerText =
 //        "Booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 4:00 बजे के बीच ही की जा सकती है।";
 //
 //      disableUserButtons();
-//      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
+//      return; 
 //    }
-
-    // ✅ Time valid → now check location
     checkLocation();
   });
 </script>
