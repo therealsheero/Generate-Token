@@ -53,7 +53,7 @@ function isWalkinTimeAllowed() {
   );
 
   const mins = ist.getHours() * 60 + ist.getMinutes();
-  return mins >= 6 * 60 && mins <= 16 * 60; // 6 AM – 4 PM
+  return mins >= 6 * 60 && mins <= 16 * 60;
 }
 
 if (!isWalkinTimeAllowed()) {
@@ -75,7 +75,6 @@ if (isTodayHoliday()) {
 }
 
 function isValidIndianMobile(mobile) {
-  // must be 10 digits and start with 6, 7, 8, or 9
   return /^[6-9]\d{9}$/.test(mobile);
 }
 
@@ -124,7 +123,6 @@ form.addEventListener("submit", async (e) => {
 //   return;
 // }
 localStorage.removeItem("tokenData");
-  console.log("🚀 SUBMIT CLICKED");
   const mobileValue = document.getElementById("mobile").value.trim();
 
   if (!isValidIndianMobile(mobileValue)) {
