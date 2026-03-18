@@ -9,8 +9,8 @@ module.exports = (req, res, next) => {
 //
 //  const currentMinutes = hours * 60 + minutes;
 //
-//  const start = 6 * 60; //6:00 AM
-//  const end = 16 * 60;  //4:00 PM
+//  const start = 6 * 60; 
+//  const end = 16 * 60; 
 //
 //  if (currentMinutes < start || currentMinutes > end) {
 //    return res.status(403).json({
