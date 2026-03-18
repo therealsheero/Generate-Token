@@ -8,7 +8,7 @@ function normalizeDistrict(d) {
 function isWeekend(dateStr) {
   const d = new Date(dateStr);
   const day = d.getDay();
-  return day === 0 || day === 6; // Sunday or Saturday
+  return day === 0 || day === 6; // shanivar and ravivar chutti
 }
 function isGazettedHoliday(dateStr) {
   return new Promise((resolve, reject) => {
@@ -34,8 +34,8 @@ exports.generateToken = async (req, res) => {
     district,
     service_type,
     qrc,
-    mode,          // 'A' or 'W'
-    selected_date  // required only for Appointment
+    mode, 
+    selected_date 
   } = req.body;
 
   if (!name || !mobile || !aadhaar_last4 || !qrc || !district || !mode) {
@@ -53,16 +53,11 @@ exports.generateToken = async (req, res) => {
     return res.status(400).json({ message: "Invalid QRC format. Must start with S and end with 000."});
   }
   try {
-    // =========================
-    // BEGIN TRANSACTION
-    // =========================
+// transaction shuru
     await new Promise((resolve, reject) =>
       db.run("BEGIN TRANSACTION", err => err ? reject(err) : resolve())
     );
-
-    // =========================
-    // 1️⃣ DUPLICATE QRC CHECK
-    // =========================
+//validating qrc
     const qrcExists = await new Promise((resolve, reject) => {
       db.get(
         "SELECT id FROM tokens WHERE qrc = ?",
@@ -79,9 +74,7 @@ exports.generateToken = async (req, res) => {
     if(qrcCountForMobile >=2){ 
      throw new Error("Only 2 QRCs allowed per mobile number.");
     }
-    // =========================
-    // 2️⃣ MOBILE LIMIT CHECK
-    // =========================
+//validating mobile limit=
     const tokenCount = await new Promise((resolve, reject) => {
       db.get(
         "SELECT COUNT(*) AS count FROM tokens WHERE mobile = ?",
@@ -93,10 +86,6 @@ exports.generateToken = async (req, res) => {
     if (tokenCount >= 3) {
       throw new Error("Maximum 3 tokens allowed per mobile number");
     }
-
-    // =========================
-    // 3️⃣ DETERMINE DATE
-    // =========================
     let bookingDate;
 //    if (mode === "W") {
 //      bookingDate = new Date().toISOString().split("T")[0];
@@ -146,15 +135,7 @@ if (deviceTokenExists) {
     "Only one token per device is allowed per day"
   );
 }
-
-    // =========================
-    // 4️⃣ RESERVE SLOT
-    // =========================
     await reserveSlot(bookingDate, mode);
-
-    // =========================
-    // 5️⃣ GENERATE TOKEN
-    // =========================
 //    const{ token, priority } = await generateDailyToken(
 //      name,
 //      mobile,
@@ -184,8 +165,6 @@ const longDistance = [
 ].includes(cleanDistrict);
 
 let tokenType;
-
-// AP / AN
 if (mode === "A") {
   // tokenType = divyang === "Yes" ? "AP" : "AN";
   tokenType = (age <=5 || age >= 60) ? "AP" : "AN";
@@ -195,9 +174,6 @@ if (mode === "A") {
   if (longDistance) {
     tokenType = "WL";
   }
-  // } else if (divyang === "Yes") {
-  //   tokenType = "WP";
-  // }
   else if(age <= 5 || age >= 60){
     tokenType = "WP";
   }  
@@ -222,10 +198,6 @@ if (mode === "A") {
 
     //const priority =
       //token.includes("-AP-") || token.includes("-WP-") ? "P" : "N";
-
-    // =========================
-    // 6️⃣ INSERT TOKEN
-    // =========================
     await new Promise((resolve, reject) => {
       db.run(
         `
@@ -257,10 +229,6 @@ if (mode === "A") {
         err => err ? reject(err) : resolve()
       );
     });
-
-    // =========================
-    // COMMIT
-    // =========================
     await new Promise((resolve, reject) =>
       db.run("COMMIT", err => err ? reject(err) : resolve())
     );
@@ -274,9 +242,6 @@ if (mode === "A") {
     });
 
   } catch (err) {
-    // =========================
-    // ROLLBACK
-    // =========================
     await new Promise(resolve =>
       db.run("ROLLBACK", () => resolve())
     );
