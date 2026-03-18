@@ -3,8 +3,6 @@ const {
   DEFAULT_APPOINTMENT_SLOTS,
   DEFAULT_WALKIN_SLOTS
 } = require("../utils/constants");
-
-// 🔧 Ensure rows exist for date range
 function ensureDateRange(startDate, days) {
   return new Promise((resolve, reject) => {
     const stmt = db.prepare(`
@@ -35,10 +33,6 @@ function ensureDateRange(startDate, days) {
     stmt.finalize(err => (err ? reject(err) : resolve()));
   });
 }
-
-// ================================
-// 📅 APPOINTMENT AVAILABILITY
-// ================================
 //exports.getAvailability = async (req, res) => {
 //  try {
 //    const disableToday = req.query.disableToday === "true";
@@ -51,7 +45,6 @@ function ensureDateRange(startDate, days) {
 //
 //    const startDateStr = start.toISOString().split("T")[0];
 //
-//    // ✅ CRITICAL FIX
 //    await ensureDateRange(start, daysAhead);
 //
 //    db.all(
@@ -169,11 +162,6 @@ exports.getAvailability = async (req, res) => {
     res.status(500).json({ message: "Availability error" });
   }
 };
-
-
-// ================================
-// 🚶 WALK-IN AVAILABILITY
-// ================================
 exports.getWalkinAvailability = (req, res) => {
   const today = new Date().toISOString().split("T")[0];
 
