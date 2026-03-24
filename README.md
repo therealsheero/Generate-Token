@@ -10,17 +10,17 @@ Domain Provider: name.com (via GitHub Student Developer Pack) -> a free .page do
 DNS Management from Cloudflare
 A Record mapping to Azure Public IP in Cloudflare only.
 
-Flow:
-      User 
-        ↓
-generatetoken.page
-        ↓
-Cloudflare DNS
-        ↓
-Azure Public IP
-        ↓
-Azure VM
-        ↓
+Flow:<br>
+User<br>
+↓<br>
+generatetoken.page<br>
+↓<br>
+Cloudflare DNS<br>
+↓<br>
+Azure Public IP<br>
+↓<br>
+Azure VM<br>
+↓<br>
 Node.js Server
 
 ---
