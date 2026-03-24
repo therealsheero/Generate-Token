@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background: lightyellow;
+      background-image: url("assets/bg3.png?v=5");
     }
 
     h2 {
@@ -89,6 +89,22 @@ tr.wl {
 tr.wn {
   background-color: #ffffff;
 }
+/*     tr.ap, tr.wp { */
+/*   background-color: #ffe6e6; /* red */ */
+/*   font-weight: bold; */
+/* } */
+
+/* tr.an { */
+/*   background-color: #fff9c4; /* yellow */ */
+/* } */
+
+/* tr.wl { */
+/*   background-color: #e6fffa; /* light green */ */
+/* } */
+
+/* tr.wn { */
+/*   background-color: #ffffff; /* white */ */
+/* } */
 
   </style>
 </head>
@@ -102,6 +118,7 @@ tr.wn {
   <button onclick="refreshCurrent()">🔄 Refresh</button>
   <button onclick="downloadCSV()">⬇ Download CSV</button>
   <button onclick="logout()">🚪 Logout</button>
+  <button onclick="openPrioritySettings()">⚙ Priority Settings </button>
 
 <!-- <div id="dashboardBoxes" style="display:flex; justify-content:center; margin-top:10px;"></div> -->
 <!-- <div style="width:350px; justify-content:centre; margin-top:30px;"><canvas id="districtChart"></canvas></div> -->
@@ -118,14 +135,14 @@ tr.wn {
     style="text-align:center; margin-top:20px; display:none;">
   Dashboard Summary
 </h3>
-<div id="dashboardSection" style="display:flex; gap:30px; align-items:flex-start; justify-content:center; margin-top:20px;">
+<div id="dashboardSection" style="display:flex; gap:10px; align-items:flex-start; justify-content:center; margin-top:20px;">
 
   <div id="dashboardBoxes" 
-     style="display:flex; gap:20px; align-items:flex-start;">
+     style="display:flex; gap:8px; align-items:flex-start;">
 </div>
 
 
-  <div style="width:350px;">
+  <div style="width:400px; height:300px; position:relative;"">
     <canvas id="districtChart"></canvas>
   </div>
 
@@ -142,7 +159,7 @@ tr.wn {
       <th>Appointment / Walk-in Date</th>
       <th>Token Count</th>
       <th>Token Type</th>
-      <th>Full Token</th>
+<!--       <th>Full Token</th> -->
       <th>Name</th>
       <th>Mobile</th>
       <th>Gender</th>
@@ -150,13 +167,15 @@ tr.wn {
 <!--       <th>PWD</th> -->
       <th>District</th>
       <th>Service</th>
-      <th>Visited</th>
+<!--       <th>Booking Distance (km)</th> -->
+      <th>Expected Time</th>
+      <th>Visited At</th>
     </tr>
   </thead>
 
   <tbody></tbody>
 </table>
 <script src="js/chart.min.js"></script>
-<script src="js/admin.js?v=20"></script>
+<script src="js/admin.js?v=50"></script>
 </body>
 </html>

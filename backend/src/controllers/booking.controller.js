@@ -5,6 +5,11 @@ const { generateDailyToken } = require("../services/token.service");
 function normalizeDistrict(d) {
   return d.split("/")[0].trim();
 }
+
+//function cleanValue(v) {
+//  if (!v) return v;
+//  return v.split("/")[0].trim();
+//}
 function isWeekend(dateStr) {
   const d = new Date(dateStr);
   const day = d.getDay();
@@ -37,6 +42,8 @@ exports.generateToken = async (req, res) => {
     mode, 
     selected_date 
   } = req.body;
+//  const cleanDistrict = cleanValue(district);
+//constServiceType = cleanValue(service_type);
 
   if (!name || !mobile || !aadhaar_last4 || !qrc || !district || !mode) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -58,6 +65,20 @@ exports.generateToken = async (req, res) => {
       db.run("BEGIN TRANSACTION", err => err ? reject(err) : resolve())
     );
 //validating qrc
+    // =========================
+    // BEGIN TRANSACTION
+    // =========================
+//    await new Promise((resolve, reject) =>
+//      db.run("BEGIN TRANSACTION", err => err ? reject(err) : resolve())
+//    );
+      await new Promise((resolve, reject) =>
+        db.run("BEGIN IMMEDIATE TRANSACTION", err => err ? reject(err) : resolve())
+      );
+
+
+    // =========================
+    // 1️⃣ DUPLICATE QRC CHECK
+    // =========================
     const qrcExists = await new Promise((resolve, reject) => {
       db.get(
         "SELECT id FROM tokens WHERE qrc = ?",
@@ -146,45 +167,133 @@ if (deviceTokenExists) {
 //      mode
 //    );
     const cleanDistrict = normalizeDistrict(district);
-const longDistance = [
-    "Baghpat",
-    "Bijnor",
-    "Bulandshahr",
-    "Gautam Buddha Nagar",
-    "Ghaziabad",
-    "Gorakhpur",
-    "Hapur",
-    "Lalitpur",
-    "Meerut",
-    "Muzaffarnagar",
-    "Pilibhit",
-    "Saharanpur",
-    "Shamli",
-    "Sonbhadra",
-    "Varanasi"
-].includes(cleanDistrict);
+//const longDistance = [
+//    "Baghpat",
+//    "Bijnor",
+//    "Bulandshahr",
+//    "Gautam Buddha Nagar",
+//    "Ghaziabad",
+//    "Gorakhpur",
+//    "Hapur",
+//    "Lalitpur",
+//    "Meerut",
+//    "Muzaffarnagar",
+//    "Pilibhit",
+//    "Saharanpur",
+//    "Shamli",
+//    "Sonbhadra",
+//    "Varanasi"
+//].includes(cleanDistrict);
+const districts = await new Promise((resolve,reject)=>{
+  db.all(
+    "SELECT district FROM priority_districts",
+    (err,rows)=> err?reject(err):resolve(rows)
+  );
+});
+
+const longDistance = districts.map(d=>d.district);
+const isLongDistance = longDistance.includes(cleanDistrict);
+const rules = await new Promise((resolve,reject)=>{
+  db.all("SELECT * FROM priority_rules",
+  (err,rows)=> err?reject(err):resolve(rows));
+});
+
+const ruleMap = {};
+rules.forEach(r=> ruleMap[r.rule_key] = r.rule_value);
+
+const childAge = ruleMap.child_age_limit;
+const seniorAge = ruleMap.senior_age_limit;
+const femaleAge = ruleMap.female_priority_age;
 
 let tokenType;
+// AP / AN
+//if (mode === "A") {
+//
+//  const now = new Date();
+//  const ist = new Date(
+//    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+//  );
+//
+//  const todayIST = ist.toISOString().split("T")[0];
+//
+//  const isToday = bookingDate === todayIST;
+//  const before10 = ist.getHours() < 6; // 6 AM 
+//
+//  if (isToday && before10 && isLongDistance) {
+//    tokenType = "AL";
+//  } else if (age <= childAge || age >= seniorAge) {
+//    tokenType = "AP";
+//  } else if (gender === "Female" && age >= femaleAge) {
+//    tokenType = "AP";
+//  } else {
+//    tokenType = "AN";
+//  }
+//} else {
+//  // WALK-IN
+//  if (isLongDistance) {
+//    tokenType = "WL";
+//  }
+//  // } else if (divyang === "Yes") {
+//  //   tokenType = "WP";
+//  // }
+//  else if(age <= childAge || age >= seniorAge){
+//    tokenType = "WP";
+//  }  
+//  else if(gender === "Female" && (age <=childAge || age >=femaleAge)){
+//    tokenType = "WP";
+//  }
+//  else {
+//    tokenType = "WN";
+//  }
+//}
 if (mode === "A") {
-  // tokenType = divyang === "Yes" ? "AP" : "AN";
-  tokenType = (age <=5 || age >= 60) ? "AP" : "AN";
-  tokenType = (gender === "Female" && age >= 55) ? "AP" : "AN";
-} else {
-  // WALK-IN
-  if (longDistance) {
-    tokenType = "WL";
+
+  const now = new Date();
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  const todayIST = ist.toISOString().split("T")[0];
+
+  const isToday = bookingDate === todayIST;
+  const before10 = ist.getHours() < 6; // 6 AM 
+
+  // ⭐ PRIORITY FIRST
+  if (age <= childAge || age >= seniorAge) {
+    tokenType = "AP";
+  } 
+  else if (gender === "Female" && age >= femaleAge) {
+    tokenType = "AP";
+  } 
+  // THEN distance logic
+  else if (isToday && before10 && isLongDistance) {
+    tokenType = "AL";
+  } 
+  else {
+    tokenType = "AN";
   }
+
   else if(age <= 5 || age >= 60){
+}
+
+else {
+
+  // ⭐ PRIORITY FIRST
+  if (age <= childAge || age >= seniorAge) {
     tokenType = "WP";
   }  
-  else if(gender === "Female" && (age <=5 || age >=55)){
+  else if (gender === "Female" && age >= femaleAge) {
     tokenType = "WP";
+  }
+  // THEN distance
+  else if (isLongDistance) {
+    tokenType = "WL";
   }
   else {
     tokenType = "WN";
   }
 }
-    const { token, priority } = await generateDailyToken(
+    const { token, token_seq, priority } = await generateDailyToken(
       name,
       mobile,
       aadhaar_last4,
@@ -203,28 +312,31 @@ if (mode === "A") {
         `
         INSERT INTO tokens
         (
-          token, name, mobile, aadhaar_last4,
+          token, token_seq, name, mobile, aadhaar_last4,
           age, gender, divyang,
           district, service_type, qrc,
-          date, mode, priority,device_id
+          date, mode, priority,device_id, token_type, distance_meters
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
         `,
         [
           token,
+          token_seq,
           name,
           mobile,
           aadhaar_last4,
           age,
           gender,
           divyang,
-          district,
+          cleanDistrict,
           service_type,
           qrc,
           bookingDate,
           mode,
           priority,
-          device_id
+          device_id,
+          tokenType,
+          req.body.distance_meters || 0
         ],
         err => err ? reject(err) : resolve()
       );

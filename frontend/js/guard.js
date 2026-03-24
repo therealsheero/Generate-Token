@@ -5,6 +5,7 @@ if (!guardToken) {
 
 const tbody = document.querySelector("#tokenTable tbody");
 let currentTableData = [];
+let TOKENS_PER_HOUR = 40; 
 function isUndoAllowed(visitedAt) {
   if (!visitedAt) return false;
 
@@ -14,7 +15,33 @@ function isUndoAllowed(visitedAt) {
 
   return diffMinutes <= 10;
 }
+//function getExpectedTime(tokenNumber) {
+//  const n = Number(tokenNumber);
+//
+//  if (n <= 40) return "10 AM - 11 AM";
+//  if (n <= 80) return "11 AM - 12 PM";
+//  if (n <= 120) return "12 PM - 1 PM";
+//  if (n <= 160) return "2 PM - 3 PM";
+//  if (n <= 200) return "3 PM - 4 PM";
+//  if (n <= 240) return "4 PM - 5 PM";
+//  return "5 PM - 6 PM";
+//}
+function getExpectedTime(tokenNumber) {
 
+  const n = Number(tokenNumber);
+  const slotIndex = Math.floor((n - 1) / TOKENS_PER_HOUR);
+
+  const startHour = 10 + slotIndex;
+  const endHour = startHour + 1;
+
+  const format = h => {
+    const hour = h > 12 ? h - 12 : h;
+    const ampm = h >= 12 ? "PM" : "AM";
+    return `${hour} ${ampm}`;
+  };
+
+  return `${format(startHour)} - ${format(endHour)}`;
+}
 async function undoVisited(tokenId) {
   await fetch("/api/guard/undo-visit", {
     method: "POST",
@@ -58,6 +85,12 @@ function parseToken(token) {
 }
 
 async function loadTokens() {
+    const tphRes = await fetch("/api/guard/tokens-per-hour", {
+        headers: { "x-guard-token": guardToken }
+        });
+
+  const tphData = await tphRes.json();
+  TOKENS_PER_HOUR = tphData.tokensPerHour || 40;
   tbody.innerHTML = "<tr><td colspan='13'>Loading...</td></tr>";
 
   const res = await fetch("/api/guard/today", {
@@ -79,6 +112,9 @@ async function loadTokens() {
 
   data.forEach((row, i) => {
     const tr = document.createElement("tr");
+    const tokenParts = row.token.split("-");
+    const tokenCount = tokenParts[0];
+    const expectedTime = getExpectedTime(tokenCount);
 
     const { count, type } = parseToken(row.token);
     tr.classList.add(type.toLowerCase());
@@ -100,14 +136,14 @@ async function loadTokens() {
 if (row.visited === 1) {
   if (isUndoAllowed(row.visited_at)) {
     visitedCell = `
-      ? 
+      Marked 
       <button style="margin-left:6px;font-size:11px;"
               onclick="undoVisited(${row.id})">
         Undo
       </button>
     `;
   } else {
-    visitedCell = "?";
+    visitedCell = "Marked";
   }
 } else {
   visitedCell = `<input type="checkbox" onclick="markVisited(${row.id})">`;
@@ -120,7 +156,6 @@ if (row.visited === 1) {
       <td>${formatDate(row.date)}</td>
       <td>${count}</td>
       <td>${type}</td>
-      <td>${row.token}</td>
       <td>${row.name}</td>
       <td>${row.mobile}</td>
       <td>${row.gender}</td>
@@ -128,6 +163,12 @@ if (row.visited === 1) {
       <td>${row.district}</td>
       <td>${row.service_type}</td>
       <td style="text-align:center">${visitedCell}</td>
+      <td>${expectedTime}</td>
+      <td>
+        ${row.visited_at
+          ? formatDateTime(row.visited_at)
+          : "-"}
+      </td>
     `;
 
     tbody.appendChild(tr);

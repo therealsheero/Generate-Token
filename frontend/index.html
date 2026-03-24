@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Token Generation Portal / टोकन जनरेशन पोर्टल</title>
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3">
 
 
 </head>
@@ -29,6 +29,9 @@
 <h2 style="text-align:center;">
   Token Generation Portal / टोकन जनरेशन पोर्टल
 </h2>
+<p style="text-align:center; font-weight:900; color: #b30000;">
+  This is for UIDAI RO LUCKNOW, 3rd Floor, Uttar Pradesh Samaj Kalyan Nirman Nigam Building, TC-46/ V, Vibhuti Khand, Gomti Nagar, Lucknow- 226010.
+</p>
 <h3 style="text-align:center; margin-top:20px; color:#b30000; font-size: 20px;">
   Call on 1947 to register your complaint, and keep the complaint number (QRC) with you for future reference. 
   <br>
@@ -39,11 +42,11 @@
 </p>
 <div style="text-align:center; margin-top:30px;">
   <button id="appointmentBtn" style="display:none;">
-    📅 Book Appointment / अपॉइंटमेंट बुक करें
+    📅 Future Appointment / भविष्य की नियुक्ति
   </button>
 
   <button id="walkinBtn" style="display:none;">
-    🚶 Generate Walk-in Token / वॉक-इन टोकन जनरेट करें
+    🚶 Current Day Appointment / वर्तमान तिथि नियुक्ति
   </button>
 </div>
 <div style="text-align:center; margin-top:25px;">
@@ -69,7 +72,97 @@
 //      btn.style.cursor = "not-allowed";
 //    });
 //  }
+
+  // 📍 LOCATION CHECK (ONLY IF TIME IS VALID)
+//  async function checkLocation() {
+//    if (!navigator.geolocation) {
+//      statusEl.innerText = "❌ Geolocation not supported";
+//      return;
+//    }
+//
+//    statusEl.innerText = "📍 Checking your location...";
+//
+//    navigator.geolocation.getCurrentPosition(
+//      async (pos) => {
+//        try {
+//          const res = await fetch("/api/location-check", {
+//            method: "POST",
+//            headers: { "Content-Type": "application/json" },
+//            body: JSON.stringify({
+//              latitude: pos.coords.latitude,
+//              longitude: pos.coords.longitude
+//            })
+//          });
+//
+//          const data = await res.json();
+//
+//          localStorage.setItem("distance_meters", data.distance_meters);
+//
+//          statusEl.innerText =
+//            `📍 Distance from office: ${data.distance_meters} meters`;
+//
+//          if (data.distance_meters <= 100) {
+//            walkinBtn.style.display = "inline-block";
+//          } else {
+//            appointmentBtn.style.display = "inline-block";
+//              //.style.display = "none";
+//          }
+//
+//        } catch {
+//          statusEl.innerText = "❌ Failed to verify location";
+//        }
+//      },
+//      () => {
+//        statusEl.innerText = "❌ Location permission denied";
+//      }
+//    );
+//  }
+//
+//  // 🔀 BUTTON NAVIGATION
+//  appointmentBtn.onclick = () => {
+//    window.location.href = "appointment.html";
+//  };
+//
+//  walkinBtn.onclick = () => {
+//    window.location.href = "walkin.html";
+//  };
+//
+//  // 🚦 ENTRY POINT
+//  window.addEventListener("load", () => {
+////    if (!isWithinBookingTimeIST()) {
+////      statusEl.innerText =
+////        "Booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 4:00 बजे के बीच ही की जा सकती है।";
+////
+////      disableUserButtons();
+////      return; // ⛔ STOP EVERYTHING (NO LOCATION CHECK)
+////    }
+//
+//    // ✅ Time valid → now check location
+//    checkLocation();
+//  });
+function isBefore11IST() {
+    const now = new Date();
+
+    const ist = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+
+    return ist.getHours() < 11;
+  }
   async function checkLocation() {
+
+    // ✅ BEFORE 11 → NO GEOFENCING
+    if (isBefore11IST()) {
+
+      statusEl.innerText =
+        "Book your appointment";
+
+      walkinBtn.style.display = "inline-block";
+
+      return;
+    }
+
+    // ⛳ AFTER 11 → APPLY GEOFENCING
     if (!navigator.geolocation) {
       statusEl.innerText = "❌ Geolocation not supported";
       return;
@@ -80,6 +173,7 @@
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
+
           const res = await fetch("/api/location-check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -98,9 +192,6 @@
 
           if (data.distance_meters <= 100) {
             walkinBtn.style.display = "inline-block";
-          } else {
-//            appointmentBtn.style.display = "inline-block";
-              walkinBtn.style.display = "none";
           }
 
         } catch {
@@ -112,6 +203,7 @@
       }
     );
   }
+
   appointmentBtn.onclick = () => {
     window.location.href = "appointment.html";
   };
@@ -127,6 +219,8 @@
 //      disableUserButtons();
 //      return; 
 //    }
+
+  window.addEventListener("load", () => {
     checkLocation();
   });
 </script>

@@ -4,6 +4,18 @@ const infoText = document.getElementById("infoText");
 const form = document.getElementById("bookingForm");
 const formWrapper = document.getElementById("formWrapper");
 
+
+//function normalizeDropdownValues(selectId) {
+//  const select = document.getElementById(selectId);
+//
+//  Array.from(select.options).forEach(opt => {
+//    const english = opt.text.split("/")[0].trim();
+//    opt.value = english;
+//  });
+//}
+//
+//normalizeDropdownValues("district");
+//normalizeDropdownValues("service_type");
 const distance = Number(localStorage.getItem("distance_meters") || 9999);
 function getDeviceId() {
   let deviceId = localStorage.getItem("device_id");
@@ -59,7 +71,7 @@ function isWalkinTimeAllowed() {
 if (!isWalkinTimeAllowed()) {
   const statusText = document.getElementById("status");
   disableWalkinForm(
-    "Walk-in booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह 6:00 बजे से शाम 4:00 बजे के बीच ही की जा सकती है।"
+    "Walk-in booking allowed only between 6:00 AM and 4:00 PM/ बुकिंग केवल सुबह7:00 बजे से शाम 6:00 बजे के बीच ही की जा सकती है।"
   );
 }
 function isTodayHoliday() {
@@ -78,13 +90,49 @@ function isValidIndianMobile(mobile) {
   return /^[6-9]\d{9}$/.test(mobile);
 }
 
-if (distance > 100) {
-  infoText.innerText = "❌ Walk-in allowed only inside office premises";
-  formWrapper.style.display = "none";
-} else {
-  infoText.innerText = "✅ You are inside office premises";
-  formWrapper.style.display = "block";
+//if (distance > 100) {
+//  infoText.innerText = "❌ Walk-in allowed only inside office premises";
+//  formWrapper.style.display = "none";
+//} else {
+//  infoText.innerText = "✅ You are inside office premises";
+//  formWrapper.style.display = "block";
+//}
+function isBefore11IST() {
+  const now = new Date();
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  return ist.getHours() < 11;
 }
+
+
+if (isBefore11IST()) {
+
+  // BEFORE 11 → No geofencing
+  infoText.innerText = "✅ Walk-in booking available";
+
+  formWrapper.style.display = "block";
+
+} else {
+
+  // AFTER 11 → Apply geofencing
+  if (distance > 100) {
+    infoText.innerText =
+      "❌ Walk-in allowed only inside office premises";
+
+    formWrapper.style.display = "none";
+  } else {
+    infoText.innerText =
+      "✅ You are inside office premises";
+
+    formWrapper.style.display = "block";
+  }
+
+}
+// =============================
+// LOAD WALK-IN AVAILABILITY
+// =============================
 async function loadWalkinAvailability() {
   try {
     const res = await fetch("/api/walkin-availability");
@@ -106,7 +154,7 @@ async function loadWalkinAvailability() {
     localStorage.removeItem("walkinFull");
 
     slotInfo.innerHTML = `
-      🟢 <strong>${data.available_slots}</strong> / ${data.total_slots}
+      🟢 <strong>${data.available_slots} </strong>
       walk-in slots available today
     `;
 
@@ -142,7 +190,8 @@ localStorage.removeItem("tokenData");
 //    divyang: document.getElementById("divyang").value,
     district: document.getElementById("district").value,
     service_type: document.getElementById("service_type").value,
-    qrc: document.getElementById("qrc").value.trim()
+    qrc: document.getElementById("qrc").value.trim(),
+    distance_meters: Number(localStorage.getItem("distance_meters") || 0)
   };
 
   statusText.innerText = "Processing...";

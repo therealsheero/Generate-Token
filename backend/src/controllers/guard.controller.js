@@ -16,6 +16,23 @@ exports.guardLogin = (req, res) => {
 
   res.status(401).json({ message: "Invalid credentials" });
 };
+
+exports.getTokensPerHourToday = (req, res) => {
+  const today = new Date().toISOString().split("T")[0];
+
+  db.get(
+    `SELECT tokens_per_hour FROM daily_token_counters WHERE date = ?`,
+    [today],
+    (err, row) => {
+      if (err) return res.status(500).json({ message: "DB error" });
+
+      res.json({
+        tokensPerHour: row?.tokens_per_hour || 40
+      });
+    }
+  );
+};
+// TODAY TOKENS ONLY
 exports.getTodayTokens = (req, res) => {
   const today = new Date().toISOString().split("T")[0];
 

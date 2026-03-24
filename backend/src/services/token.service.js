@@ -75,23 +75,37 @@ async function generateDailyToken(
     );
   });
 
-  //global count sahi kiya
+  // ?? GLOBAL COUNT
+//  const seq = await new Promise((resolve, reject) => {
+//    db.run(
+//      `UPDATE daily_token_counters
+//       SET last_token = last_token + 1
+//       WHERE date = ?`,
+//      [date],
+//      err => {
+//        if (err) return reject(err);
+//        db.get(
+//          `SELECT last_token FROM daily_token_counters WHERE date = ?`,
+//          [date],
+//          (err, row) => err ? reject(err) : resolve(row.last_token)
+//        );
+//      }
+//    );
   const seq = await new Promise((resolve, reject) => {
-    db.run(
-      `UPDATE daily_token_counters
-       SET last_token = last_token + 1
-       WHERE date = ?`,
-      [date],
-      err => {
-        if (err) return reject(err);
-        db.get(
-          `SELECT last_token FROM daily_token_counters WHERE date = ?`,
-          [date],
-          (err, row) => err ? reject(err) : resolve(row.last_token)
-        );
-      }
-    );
-  });
+  db.get(
+    `
+    UPDATE daily_token_counters
+    SET last_token = last_token + 1
+    WHERE date = ?
+    RETURNING last_token
+    `,
+    [date],
+    (err, row) => {
+      if (err) reject(err);
+      else resolve(row.last_token);
+    }
+  );
+});
 
   //purane counters phir bhi rakhe taki admin analysis easy rahe
   const map = {
@@ -100,6 +114,8 @@ async function generateDailyToken(
     WP: "wp_count",
     WN: "wn_count",
     WL: "wn_count"
+    WL: "wl_count",
+    AL: "al_count" // WL counts as WN
   };
 
   const col = map[tokenType];
@@ -113,6 +129,7 @@ async function generateDailyToken(
   const padded = pad(seq);
   return {
     token: `${padded}-${tokenType}-${aadhaar_last4}`,
+    token_seq: seq,
     priority
   };
 }

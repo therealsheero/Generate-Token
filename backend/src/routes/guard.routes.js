@@ -9,5 +9,5 @@ router.get("/today", guardAuth, guardController.getTodayTokens);
 router.post("/visit", guardAuth, guardController.markVisited);
 // router.post("/undo", guardAuth, guardController.undoVisited);
 router.post("/undo-visit", guardAuth, guardController.undoVisited);
-
+router.get("/tokens-per-hour", guardAuth, guardController.getTokensPerHourToday);
 module.exports = router;

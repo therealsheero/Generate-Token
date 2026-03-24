@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background: lightyellow;
+      background-image: url("assets/bg3.png?v=3");
     }
 
     h2 {
@@ -66,7 +66,7 @@
 
 <div class="actions">
   <button onclick="loadTokens()"> Refresh</button>
-  <button onclick="downloadCSV()"> Download CSV</button>
+<!--   <button onclick="downloadCSV()"> Download CSV</button> -->
   <button onclick="logout()"> Logout</button>
 </div>
 
@@ -78,7 +78,7 @@
       <th>Appointment / Walk-in Date</th>
       <th>Token Count</th>
       <th>Token Type</th>
-      <th>Full Token</th>
+<!--       <th>Full Token</th> -->
       <th>Name</th>
       <th>Mobile</th>
       <th>Gender</th>
@@ -86,11 +86,13 @@
       <th>District</th>
       <th>Service</th>
       <th>Visited</th>
+      <th>Expected Time</th>
+      <th>Visited At</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
-<script src="js/guard.js?v=8"></script>
+<script src="js/guard.js?v=12"></script>
 </body>
 </html>
