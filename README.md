@@ -1,10 +1,10 @@
 kindly see the code and then initialize the db :)
 
-PROJECT: Production Deployment Architecture
-Government Token & Appointment Management System
+## PROJECT: Production Deployment Architecture
+## Government Token & Appointment Management System
 Hosted on Microsoft Azure (Production VM)
-
-1. Domain & DNS
+---
+## 1. Domain & DNS
 Domain Provider: name.com (via GitHub Student Developer Pack) -> a free .page domain
 
 DNS Management from Cloudflare
@@ -20,8 +20,8 @@ Azure Public IP
 Azure VM
         ↓
 Node.js Server
-
-2. Cloud Hosting – Microsoft Azure - Azure Virtual Machine
+---
+## 2. Cloud Hosting – Microsoft Azure - Azure Virtual Machine
 
 Full control over backend
 Premium SSD support
@@ -40,8 +40,8 @@ Azure Configuration:
 | Disk Type      | Premium SSD Supported |
 | Monthly Cost   | ~$17.96               |
 | Deployment     | GitHub → Azure        |
-
-3. Deployment Pipeline
+---
+## 3. Deployment Pipeline
 
 CI/CD flow:
 
@@ -57,8 +57,8 @@ Live Production System
 
 - Deployment to Azure VM
 - Process manager (PM2 / Node runtime)
-
-4. Database Layer
+---
+## 4. Database Layer
 Database Used -> SQLite (hosted inside Azure VM)
 
 Record Size Calculation
@@ -74,8 +74,8 @@ At ~300 tokens per day:
 ≈ 2–3 MB/month
 
 ≈ 25–30 MB/year
-
-5. Storage Architecture
+---
+## 5. Storage Architecture
 
 | Storage Type             | Purpose                  |
 | ------------------------ | ------------------------ |
@@ -87,8 +87,8 @@ VM supports:
 4 data disks
 3750 max IOPS
 Premium SSD tier
-
-6. Security Architecture
+---
+## 6. Security Architecture
 
 Transport Layer
 
@@ -100,8 +100,8 @@ Infrastructure Security
 Azure Network Security Group
 Restricted inbound ports
 SSH secured access
-
-7. Full Tech Stack
+---
+## 7. Full Tech Stack
 
 Frontend
 
@@ -126,8 +126,8 @@ Azure Virtual Machine (B2als_v2)
 GitHub Integration
 name.com Domain
 HTTPS SSL
-
-8. Storage & Resource Utilization
+---
+## 8. Storage & Resource Utilization
 
 | Resource        | Usage                     |
 | --------------- | ------------------------- |
@@ -138,8 +138,8 @@ HTTPS SSL
 | Disk Required   | < 1 GB for multiple years |
 
 OUR VM (4GB RAM) is comfortably provisioned.
-
-9. Scalability Potential
+---
+## 9. Scalability Potential
 
 Current Load:
 
@@ -151,8 +151,6 @@ VM Capacity:
 2 vCPU + 4GB RAM can handle:
 
 -> 2000+ requests/day without scaling
-
-
-Is Node version consistent?
+---
 
 Is working directory correct?
