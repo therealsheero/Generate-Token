@@ -1,8 +1,8 @@
 kindly see the code and then initialize the db :)
 
-## PROJECT: Production Deployment Architecture
-## Government Token & Appointment Management System
+## PROJECT: Production Deployment Architecture - Government Token & Appointment Management System
 Hosted on Microsoft Azure (Production VM)
+
 ---
 ## 1. Domain & DNS
 Domain Provider: name.com (via GitHub Student Developer Pack) -> a free .page domain
@@ -20,7 +20,9 @@ Azure Public IP
 Azure VM
         ↓
 Node.js Server
+
 ---
+
 ## 2. Cloud Hosting – Microsoft Azure - Azure Virtual Machine
 
 Full control over backend
@@ -40,6 +42,7 @@ Azure Configuration:
 | Disk Type      | Premium SSD Supported |
 | Monthly Cost   | ~$17.96               |
 | Deployment     | GitHub → Azure        |
+
 ---
 ## 3. Deployment Pipeline
 
@@ -57,6 +60,7 @@ Live Production System
 
 - Deployment to Azure VM
 - Process manager (PM2 / Node runtime)
+
 ---
 ## 4. Database Layer
 Database Used -> SQLite (hosted inside Azure VM)
@@ -74,6 +78,7 @@ At ~300 tokens per day:
 ≈ 2–3 MB/month
 
 ≈ 25–30 MB/year
+
 ---
 ## 5. Storage Architecture
 
@@ -87,6 +92,7 @@ VM supports:
 4 data disks
 3750 max IOPS
 Premium SSD tier
+
 ---
 ## 6. Security Architecture
 
@@ -100,6 +106,7 @@ Infrastructure Security
 Azure Network Security Group
 Restricted inbound ports
 SSH secured access
+
 ---
 ## 7. Full Tech Stack
 
@@ -126,6 +133,7 @@ Azure Virtual Machine (B2als_v2)
 GitHub Integration
 name.com Domain
 HTTPS SSL
+
 ---
 ## 8. Storage & Resource Utilization
 
@@ -136,8 +144,8 @@ HTTPS SSL
 | RAM Usage       | ~500–800 MB typical       |
 | CPU Load        | Low (300 tokens/day)      |
 | Disk Required   | < 1 GB for multiple years |
-
 OUR VM (4GB RAM) is comfortably provisioned.
+
 ---
 ## 9. Scalability Potential
 
@@ -151,6 +159,7 @@ VM Capacity:
 2 vCPU + 4GB RAM can handle:
 
 -> 2000+ requests/day without scaling
+
 ---
 
 Is working directory correct?
