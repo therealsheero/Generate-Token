@@ -11,7 +11,9 @@ DNS Management from Cloudflare
 A Record mapping to Azure Public IP in Cloudflare only.
 
 Flow:
-User → generatetoken.page
+      User 
+        ↓
+generatetoken.page
         ↓
 Cloudflare DNS
         ↓
