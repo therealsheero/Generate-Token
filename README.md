@@ -163,5 +163,3 @@ VM Capacity:
 -> 2000+ requests/day without scaling
 
 ---
-
-Is working directory correct?
